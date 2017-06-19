@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.AnalysisChannelMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.AnalysisChannel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="frist_code" property="fristCode" jdbcType="VARCHAR" />
+    <result column="frist_name" property="fristName" jdbcType="VARCHAR" />
+    <result column="two_code" property="twoCode" jdbcType="VARCHAR" />
+    <result column="two_name" property="twoName" jdbcType="VARCHAR" />
+    <result column="link_code" property="linkCode" jdbcType="VARCHAR" />
+    <result column="pv" property="pv" jdbcType="INTEGER" />
+    <result column="uv" property="uv" jdbcType="INTEGER" />
+    <result column="ss" property="ss" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, country, frist_code, frist_name, two_code, two_name, link_code, pv, uv, ss, create_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_analysis_channel
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_analysis_channel
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.net.ibingo.core.model.AnalysisChannel" >
+    insert into t_analysis_channel (id, country, frist_code, 
+      frist_name, two_code, two_name, 
+      link_code, pv, uv, ss, 
+      create_date)
+    values (#{id,jdbcType=INTEGER}, #{country,jdbcType=VARCHAR}, #{fristCode,jdbcType=VARCHAR}, 
+      #{fristName,jdbcType=VARCHAR}, #{twoCode,jdbcType=VARCHAR}, #{twoName,jdbcType=VARCHAR}, 
+      #{linkCode,jdbcType=VARCHAR}, #{pv,jdbcType=INTEGER}, #{uv,jdbcType=INTEGER}, #{ss,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.net.ibingo.core.model.AnalysisChannel" >
+    insert into t_analysis_channel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+      <if test="fristCode != null" >
+        frist_code,
+      </if>
+      <if test="fristName != null" >
+        frist_name,
+      </if>
+      <if test="twoCode != null" >
+        two_code,
+      </if>
+      <if test="twoName != null" >
+        two_name,
+      </if>
+      <if test="linkCode != null" >
+        link_code,
+      </if>
+      <if test="pv != null" >
+        pv,
+      </if>
+      <if test="uv != null" >
+        uv,
+      </if>
+      <if test="ss != null" >
+        ss,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="fristCode != null" >
+        #{fristCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fristName != null" >
+        #{fristName,jdbcType=VARCHAR},
+      </if>
+      <if test="twoCode != null" >
+        #{twoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="twoName != null" >
+        #{twoName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkCode != null" >
+        #{linkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="pv != null" >
+        #{pv,jdbcType=INTEGER},
+      </if>
+      <if test="uv != null" >
+        #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="ss != null" >
+        #{ss,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.net.ibingo.core.model.AnalysisChannel" >
+    update t_analysis_channel
+    <set >
+      <if test="country != null" >
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="fristCode != null" >
+        frist_code = #{fristCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fristName != null" >
+        frist_name = #{fristName,jdbcType=VARCHAR},
+      </if>
+      <if test="twoCode != null" >
+        two_code = #{twoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="twoName != null" >
+        two_name = #{twoName,jdbcType=VARCHAR},
+      </if>
+      <if test="linkCode != null" >
+        link_code = #{linkCode,jdbcType=VARCHAR},
+      </if>
+      <if test="pv != null" >
+        pv = #{pv,jdbcType=INTEGER},
+      </if>
+      <if test="uv != null" >
+        uv = #{uv,jdbcType=INTEGER},
+      </if>
+      <if test="ss != null" >
+        ss = #{ss,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.net.ibingo.core.model.AnalysisChannel" >
+    update t_analysis_channel
+    set country = #{country,jdbcType=VARCHAR},
+      frist_code = #{fristCode,jdbcType=VARCHAR},
+      frist_name = #{fristName,jdbcType=VARCHAR},
+      two_code = #{twoCode,jdbcType=VARCHAR},
+      two_name = #{twoName,jdbcType=VARCHAR},
+      link_code = #{linkCode,jdbcType=VARCHAR},
+      pv = #{pv,jdbcType=INTEGER},
+      uv = #{uv,jdbcType=INTEGER},
+      ss = #{ss,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=DATE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.AnalysisChannelQueryBean" resultType="java.lang.Integer">
+	select count(id) from t_analysis_channel  
+	where 1 = 1 
+	<if test="startDate != null and startDate != ''">
+		and create_date &gt;= #{startDate} 
+	</if>
+	<if test="endDate != null and endDate != ''">
+		and create_date &lt;= #{endDate} 
+	</if>
+	<if test="fristCode != null and fristCode != ''">
+		 and frist_code = #{fristCode} 
+	</if>
+	<if test="twoCode != null and twoCode != ''">
+		and two_code = #{twoCode} 
+	</if>
+	<if test="linkCode != null and linkCode != ''">
+		and link_code = #{linkCode} 
+	</if>
+  </select>
+	
+  <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.AnalysisChannelQueryBean" resultMap="BaseResultMap">
+	select <include refid="Base_Column_List" /> from t_analysis_channel 
+	where 1 = 1 
+	<if test="startDate != null and startDate != ''">
+		and create_date &gt;= #{startDate} 
+	</if>
+	<if test="endDate != null and endDate != ''">
+		and create_date &lt;= #{endDate} 
+	</if>
+	<if test="fristCode != null and fristCode != ''">
+		 and frist_code = #{fristCode} 
+	</if>
+	<if test="twoCode != null and twoCode != ''">
+		and two_code = #{twoCode} 
+	</if>
+	<if test="linkCode != null and linkCode != ''">
+		and link_code = #{linkCode} 
+	</if>
+	order by create_date desc 
+	limit ${startIndex}, ${pageSize}
+  </select>
+  
+  <select id="selectLinkCode" resultMap="BaseResultMap">
+    select distinct(link_code) linkCode from t_analysis_channel
+  </select>
+  
+  <delete id="deleteByFristCode" parameterType="java.lang.String" >
+    delete from t_analysis_channel
+    where frist_code = #{fristCode}
+  </delete>
+  
+  <delete id="deleteByTwoCode" parameterType="java.lang.String" >
+    delete from t_analysis_channel
+    where two_code = #{twoCode}
+  </delete>
+  
+  <select id="selectSum" resultMap="BaseResultMap" parameterType="cn.net.ibingo.core.model.AnalysisChannel" >
+    select sum(pv) pv, sum(uv) uv, sum(ss) ss 
+    from t_analysis_channel
+    where 1 = 1 
+   	<if test="createDate != null">
+		and create_date = #{createDate} 
+	</if>
+  </select>
+  
+</mapper>

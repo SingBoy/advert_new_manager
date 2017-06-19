@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.SubscribeSuccessAnalysisMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.SubscribeSuccessAnalysis" >
+    <result column="index" property="index" jdbcType="BIGINT" />
+    <result column="count" property="count" jdbcType="BIGINT" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="firstChannelId" property="firstchannelid" jdbcType="LONGVARCHAR" />
+    <result column="SecChannelId" property="secchannelid" jdbcType="LONGVARCHAR" />
+    <result column="advertisersName" property="advertisersname" jdbcType="LONGVARCHAR" />
+    <result column="resourcesName" property="resourcesname" jdbcType="LONGVARCHAR" />
+    <result column="ipOprator" property="ipoprator" jdbcType="LONGVARCHAR" />
+    <result column="type" property="type" jdbcType="LONGVARCHAR" />
+    <result column="price" property="price" jdbcType="LONGVARCHAR" />
+    <result column="country" property="country" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Blob_Column_List" >
+    firstChannelId, SecChannelId, advertisersName, resourcesName, ipOprator, type, price, 
+    country
+  </sql>
+  <insert id="insert" parameterType="cn.net.ibingo.core.model.SubscribeSuccessAnalysis" >
+    insert into t_subscribe_success_analysis (index, count, date, 
+      firstChannelId, SecChannelId, advertisersName, 
+      resourcesName, ipOprator, type, 
+      price, country)
+    values (#{index,jdbcType=BIGINT}, #{count,jdbcType=BIGINT}, #{date,jdbcType=TIMESTAMP}, 
+      #{firstchannelid,jdbcType=LONGVARCHAR}, #{secchannelid,jdbcType=LONGVARCHAR}, #{advertisersname,jdbcType=LONGVARCHAR}, 
+      #{resourcesname,jdbcType=LONGVARCHAR}, #{ipoprator,jdbcType=LONGVARCHAR}, #{type,jdbcType=LONGVARCHAR}, 
+      #{price,jdbcType=LONGVARCHAR}, #{country,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.net.ibingo.core.model.SubscribeSuccessAnalysis" >
+    insert into t_subscribe_success_analysis
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="index != null" >
+        index,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="date != null" >
+        date,
+      </if>
+      <if test="firstchannelid != null" >
+        firstChannelId,
+      </if>
+      <if test="secchannelid != null" >
+        SecChannelId,
+      </if>
+      <if test="advertisersname != null" >
+        advertisersName,
+      </if>
+      <if test="resourcesname != null" >
+        resourcesName,
+      </if>
+      <if test="ipoprator != null" >
+        ipOprator,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="index != null" >
+        #{index,jdbcType=BIGINT},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=BIGINT},
+      </if>
+      <if test="date != null" >
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstchannelid != null" >
+        #{firstchannelid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="secchannelid != null" >
+        #{secchannelid,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="advertisersname != null" >
+        #{advertisersname,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="resourcesname != null" >
+        #{resourcesname,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="ipoprator != null" >
+        #{ipoprator,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectSum" resultMap="BaseResultMap" parameterType="cn.net.ibingo.core.model.SubscribeSuccessAnalysis" >
+    select sum(`count`) count, sum(price) price from t_subscribe_success_analysis
+    where 1 = 1 
+   	<if test="date != null">
+		and `date` = #{date} 
+	</if>
+	<if test="firstchannelid != null" >
+        and firstChannelId = #{firstchannelid}
+    </if>
+    <if test="secchannelid != null" >
+        and SecChannelId = #{secchannelid}
+    </if>
+    <if test="advertisersname != null" >
+        and advertisersName = #{advertisersname}
+   </if>
+ </select>
+  
+</mapper>

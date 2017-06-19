@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.TimezoneCountryMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.TimezoneCountry" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="timezone" property="timezone" jdbcType="INTEGER" />
+    <result column="country_zh_CN" property="countryZhCn" jdbcType="VARCHAR" />
+    <result column="country_ISO" property="countryIso" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, timezone, country_zh_CN, country_ISO
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_timezone_country
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_timezone_country
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.net.ibingo.core.model.TimezoneCountry" >
+    insert into t_timezone_country (id, timezone, country_zh_CN, 
+      country_ISO)
+    values (#{id,jdbcType=INTEGER}, #{timezone,jdbcType=INTEGER}, #{countryZhCn,jdbcType=VARCHAR}, 
+      #{countryIso,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.net.ibingo.core.model.TimezoneCountry" >
+    insert into t_timezone_country
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="timezone != null" >
+        timezone,
+      </if>
+      <if test="countryZhCn != null" >
+        country_zh_CN,
+      </if>
+      <if test="countryIso != null" >
+        country_ISO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="timezone != null" >
+        #{timezone,jdbcType=INTEGER},
+      </if>
+      <if test="countryZhCn != null" >
+        #{countryZhCn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryIso != null" >
+        #{countryIso,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.net.ibingo.core.model.TimezoneCountry" >
+    update t_timezone_country
+    <set >
+      <if test="timezone != null" >
+        timezone = #{timezone,jdbcType=INTEGER},
+      </if>
+      <if test="countryZhCn != null" >
+        country_zh_CN = #{countryZhCn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryIso != null" >
+        country_ISO = #{countryIso,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.net.ibingo.core.model.TimezoneCountry" >
+    update t_timezone_country
+    set timezone = #{timezone,jdbcType=INTEGER},
+      country_zh_CN = #{countryZhCn,jdbcType=VARCHAR},
+      country_ISO = #{countryIso,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByISO" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_timezone_country
+    where lower(country_ISO) = #{countryIso}
+  </select>
+  
+  <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.TimezoneCountryQueryBean" resultType="java.lang.Integer">
+	select count(id) from t_timezone_country  
+	where 1 = 1   
+	 <if test="keyword != null and keyword != ''">
+		and ( country_zh_CN like '%${keyword}%' 
+			or country_ISO like '%${keyword}%' )
+	</if>
+  </select>
+	
+  <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.TimezoneCountryQueryBean" resultMap="BaseResultMap">
+	 select <include refid="Base_Column_List" /> from t_timezone_country    
+	 where 1 = 1 
+	 <if test="keyword != null and keyword != ''">
+		and ( country_zh_CN like '%${keyword}%' 
+			or country_ISO like '%${keyword}%' )
+	</if>
+	order by CONVERT(country_ISO using gbk) COLLATE gbk_chinese_ci asc
+	limit ${startIndex}, ${pageSize}
+  </select>
+
+  <select id="queryCoutryList"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from t_timezone_country
+  </select>
+  
+</mapper>
