@@ -58,7 +58,7 @@
 									</button>
 									<%--<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/advertisers/doSave?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}"><i class="fa fa-plus"></i> 新增</a>--%>
 									<a type="button" class="btn btn-info" href="${pageContext.request.contextPath}/advertisers/syncVoluumAffil"><i class="fa fa-asterisk"></i> 同步</a>
-									<a onclick="setTimeoutTask()" class="btn btn-darkorange btn-xs shiny"> 测试</a>
+									<a type="button" class="btn btn-info" href="${pageContext.request.contextPath}/advertisers/uploadFile"><i class="fa fa-asterisk"></i> 文件上传</a>
 								</div>
 							</div>
 						</form>
@@ -67,10 +67,10 @@
 							<table class="table table-hover table-bordered table-striped table-condensed flip-content">
 								<thead class="flip-content bordered-palegreen">
 									<tr>
-										<th class="text-center" style="width:240px;">广告主名称</th>
-										<th class="text-center" style="width:200px;">代码</th>
-										<th class="text-center" style="width:290px;">描述</th>
-										<th class="text-center" style="width:200px;">更新时间</th>
+										<th class="text-center" style="width:350px;">广告主名称</th>
+										<%--<th class="text-center" style="width:200px;">代码</th>--%>
+										<th class="text-center" style="width:250px;">更新时间</th>
+										<th class="text-center" style="width:300px;">描述</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -78,7 +78,8 @@
 									<c:forEach items="${pageDataList.pageRecords}" var="item">
 										<tr>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
-											<td class="text-center" style="word-break:break-all;">${item.code }</td>
+											<td class="text-center"><fmt:formatDate value="${item.modifyDate}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+											<%--<td class="text-center" style="word-break:break-all;">${item.code }</td>--%>
 											<c:choose>
 												<c:when test="${fn:length(item.description) ne 0}">
 													<td class="text-center" style="word-break:break-all;">${item.description}</td>
@@ -87,7 +88,7 @@
 													<td class="text-center">-</td>
 												</c:otherwise>
 											</c:choose>
-											<td class="text-center"><fmt:formatDate value="${item.modifyDate}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+
 											<td class="text-center">
 												<a href="${pageContext.request.contextPath}/advertisers/doUpdate/${item.id}?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a> 
 												<a onclick="confirmImg(${item.id})" class="btn btn-darkorange btn-xs shiny"><i class="fa fa-trash-o"></i> 删除</a>
@@ -122,16 +123,7 @@
 				"?keyword="+$("#keyword").val()+"&currentPage="+${queryBean.currentPage}+"&pageSize="+${queryBean.pageSize};
 			}
 		}
-        function setTimeoutTask() {
-            $.ajax({
-                type: "POST", //提交方式 post 和 get
-                url: "${pageContext.request.contextPath}/advertisers/setTimeoutTask",//连接地址
-                contentType: "application/json;charset=utf-8",//编码形式
-                success: function (data) {
-                }
-            });
-           // setTimeout(setTimeoutTask(),3000);
-        }
+
 	</script>
 </body>
 </html>

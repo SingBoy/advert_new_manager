@@ -8,6 +8,8 @@ public class Resources {
 
     private String name;
 
+	private String nameAlias;
+
     private Integer adsId;
 
     private Float price;
@@ -98,7 +100,15 @@ public class Resources {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getAdsId() {
+	public String getNameAlias() {
+		return nameAlias;
+	}
+
+	public void setNameAlias(String nameAlias) {
+		this.nameAlias = nameAlias;
+	}
+
+	public Integer getAdsId() {
         return adsId;
     }
 

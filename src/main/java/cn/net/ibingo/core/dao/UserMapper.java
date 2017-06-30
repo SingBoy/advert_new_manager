@@ -18,9 +18,13 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
     
-	public Integer selectCountByQueryBean(UserQueryBean queryBean);
+	/*public Integer selectCountByQueryBean(UserQueryBean queryBean);
 
-	public List<User> selectByQueryBean(UserQueryBean queryBean);
+	public List<User> selectByQueryBean(UserQueryBean queryBean);*/
+
+    public Integer selectCount(UserQueryBean queryBean);
+
+    public List<User> selectList(UserQueryBean queryBean);
 
 	public User selectUserByUsername(String username);
 	

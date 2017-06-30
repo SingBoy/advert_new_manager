@@ -11,7 +11,7 @@
     id, voluum_trafficsource_id, voluum_offer_id, subscription_rate
   </sql>
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByTrafficeId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_distribution_rate
@@ -59,6 +59,11 @@
     select subscription_rate
     from t_distribution_rate
     where voluum_trafficsource_id = #{voluumTrafficSourceId,jdbcType=VARCHAR} and voluum_offer_id = #{voluumOfferId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap"  >
+    select <include refid="Base_Column_List" />
+    from t_distribution_rate
   </select>
 
 </mapper>

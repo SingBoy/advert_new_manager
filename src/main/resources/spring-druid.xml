@@ -48,5 +48,7 @@
 		<property name="basePackage" value="cn.net.ibingo.core.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean" />
 	</bean>
+
+
 	
 </beans>

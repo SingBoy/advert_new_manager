@@ -15,7 +15,7 @@ import com.alibaba.druid.util.StringUtils;
 import cn.net.ibingo.common.pagination.model.PaginationList;
 import cn.net.ibingo.common.pagination.model.SimplePaginatedList;
 import cn.net.ibingo.common.utils.CodeUtils;
-import cn.net.ibingo.core.dao.AnalysisChannelMapper;
+//import cn.net.ibingo.core.dao.AnalysisChannelMapper;
 import cn.net.ibingo.core.dao.FristChannelMapper;
 import cn.net.ibingo.core.dao.FristPromotionMapper;
 import cn.net.ibingo.core.model.FristChannel;
@@ -34,8 +34,8 @@ public class FristChannelServiceImpl implements FristChannelService {
 	@Autowired
 	private FristPromotionMapper fristPromotionMapper;
 	
-	@Autowired
-	private AnalysisChannelMapper analysisChannelMapper;
+	//@Autowired
+	//private AnalysisChannelMapper analysisChannelMapper;
 	
 	@Autowired
 	private FristChannelRedis fristChannelRedis;

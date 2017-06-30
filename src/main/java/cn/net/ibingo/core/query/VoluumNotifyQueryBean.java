@@ -16,7 +16,7 @@ public class VoluumNotifyQueryBean extends QueryBean {
 
 	public int dataType;
 
-	private String oneTree = "2";
+	private String oneTree = "0";
 	
 	private String twoTree = "1";
 

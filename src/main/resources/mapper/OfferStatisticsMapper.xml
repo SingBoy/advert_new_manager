@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.OfferStatisticsMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.OfferStatistics" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
+    <result column="offer_name" property="offerName" jdbcType="VARCHAR" />
+    <result column="offer_name_alias" property="offerNameAlias" jdbcType="VARCHAR" />
+    <result column="traffic_source_id" property="trafficSourceId" jdbcType="VARCHAR" />
+    <result column="traffic_source_name" property="trafficSourceName" jdbcType="VARCHAR" />
+    <result column="visits_num" property="visitsNum" jdbcType="INTEGER" />
+    <result column="convers_num" property="conversNum" jdbcType="INTEGER" />
+    <result column="convers_rate" property="conversRate" jdbcType="FLOAT" />
+    <result column="date" property="date" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, country, offer_id, offer_name, offer_name_alias, visits_num,convers_num,convers_rate,create_date
+  </sql>
+
+
+  <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.OfferStatisticsQueryBean" resultType="java.lang.Integer">
+    select count(id) from t_offer_statistics
+    where 1 = 1
+    <if test="startDate != null and startDate != ''">
+      and date &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and date &lt;= #{endDate}
+    </if>
+    <if test="offerId != null and offerId != ''">
+      and offer_id = #{offerId}
+    </if>
+    <if test="offerNameAlias != null and offerNameAlias != ''">
+      and offer_name_alias = #{offerNameAlias}
+    </if>
+    <if test="country != null and country != ''">
+      and country = #{country}
+    </if>
+    <if test="trafficSourceId != null and trafficSourceId != ''">
+      and traffic_source_id = #{trafficSourceId}
+    </if>
+    GROUP BY offer_id,date
+  </select>
+  <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.OfferStatisticsQueryBean" resultMap="BaseResultMap">
+    SELECT o.date,b.country AS country,o.offer_name,o.offer_name_alias,sum(o.visits_num) as visits_num,sum(o.convers_num) as convers_num,o.convers_rate from t_offer_statistics o
+    LEFT JOIN t_base_mcc b ON o.country = b.iso
+    WHERE 1 = 1
+    <if test="startDate != null and startDate != ''">
+      and o.date &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and o.date &lt;= #{endDate}
+    </if>
+    <if test="offerId != null and offerId != ''">
+      and o.offer_id = #{offerId}
+    </if>
+    <if test="offerNameAlias != null and offerNameAlias != ''">
+      and o.offer_name_alias = #{offerNameAlias}
+    </if>
+    <if test="country != null and country != ''">
+      and o.country = #{country}
+    </if>
+    <if test="trafficSourceId != null and trafficSourceId != ''">
+      and o.traffic_source_id = #{trafficSourceId}
+    </if>
+    GROUP BY o.`offer_id`,o.`date`
+    order by o.date desc
+    limit ${startIndex}, ${pageSize}
+  </select>
+
+  <insert id="insertOfferStatistics" parameterType="java.util.List">
+    INSERT INTO t_offer_statistics (country,offer_id,offer_name,offer_name_alias,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      ( #{item.country,jdbcType=VARCHAR},
+        #{item.offerId,jdbcType=VARCHAR},
+        #{item.offerName,jdbcType=VARCHAR},
+        #{item.offerNameAlias,jdbcType=VARCHAR},
+        #{item.trafficSourceId,jdbcType=VARCHAR},
+        #{item.trafficSourceName,jdbcType=VARCHAR},
+        #{item.visitsNum,jdbcType=INTEGER},
+        #{item.conversNum,jdbcType=INTEGER},
+        #{item.conversRate,jdbcType=FLOAT},
+        #{item.date,jdbcType=TIMESTAMP},
+        #{item.createDate,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+</mapper>

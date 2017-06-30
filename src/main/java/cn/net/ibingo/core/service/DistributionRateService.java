@@ -9,8 +9,10 @@ import java.util.List;
 
 public interface DistributionRateService {
 
-	public List<DistributionRate> selectAll(String id);
+	public List<DistributionRate> selectByTrafficeId(String trafficId);
 
 	public Float selectByTrafficIdAndOfferId(String voluumTrafficSourceId,String voluumOfferId);
+
+	public List<DistributionRate> selectAll();
 	
 }

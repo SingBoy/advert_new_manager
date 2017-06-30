@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:tool="http://www.springframework.org/schema/tool"
-	xmlns:util="http://www.springframework.org/schema/util"
-	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:tool="http://www.springframework.org/schema/tool"
+	   xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
@@ -15,8 +14,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/tool http://www.springframework.org/schema/tool/spring-tool.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-	">
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 	<!-- 开启Spring的Annotation功能 -->
 	<mvc:annotation-driven />
 	
@@ -94,6 +92,7 @@
 			<mvc:mapping path="/advertisers/**"/>
 			<mvc:mapping path="/default/**"/>
 			<mvc:mapping path="/timezoneCountry/**"/>
+			<mvc:mapping path="/voluum/**"/>
 			
 			<mvc:exclude-mapping path="/login"/>
 			<mvc:exclude-mapping path="/logout"/>
@@ -111,9 +110,15 @@
 			<mvc:exclude-mapping path="/mnc/listMncName/*"/>
 			<mvc:exclude-mapping path="/resources/doBean"/>
 			<mvc:exclude-mapping path="/timezoneCountry/doIso"/>
+			<mvc:exclude-mapping path="/voluum/delete"/>
+			<mvc:exclude-mapping path="/resources/syncVoluumOffer"/>
+			<mvc:exclude-mapping path="/advertisers/syncVoluumAffil"/>
+
 			
 			<bean class="cn.net.ibingo.common.interceptor.AuthInterceptor" />
 		</mvc:interceptor>
-	</mvc:interceptors> 
+	</mvc:interceptors>
 
+	<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
+	<task:scheduler id="qbScheduler" pool-size="10"/>
 </beans>

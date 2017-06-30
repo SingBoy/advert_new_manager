@@ -73,7 +73,7 @@
 							<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">资源名称</label>
 								<div class="col-sm-4">
-									<input type="text" disabled="disabled" class="form-control" id="name" name="name" value="${resources.name}" placeholder="资源名称">
+									<input type="text" disabled="disabled" class="form-control" id="" name="" value="${resources.name}" placeholder="资源名称">
 									<label class="error" for="name" style="display:none;">请填写资源名称</label>
 									<label class="error" for="name" style="display:none;">资源名称已存在</label>
 								</div>
@@ -103,13 +103,19 @@
 								<label for="name" class="col-sm-4 control-label no-padding-right">国家</label>
 								<div style = "display:inline;">
 									<div style="float:left" class="col-sm-3">
-										<input type="text" class="form-control" id="mccMnc1" name="mccMnc1" value="${resources.mccGroup}" placeholder="国家" disabled="disabled">
-										<input type="hidden" name="mccMnc" id="mccMnc" value="${resources.mccGroup}">
-									<label class="error" for="mccMnc" style="display:none;">请选择国家和运营商</label>
+										<input type="text" class="form-control" value="${resources.mccGroup}" placeholder="国家" disabled="disabled">
 									</div>
 									<%--<div style="float:left" class="col-sm-3">
 										<a type="button" id="lookOver" class="btn btn-primary" onclick="ModalDialog()"><i class="fa fa-plus"></i> 国家和运营商</a>
 									</div>--%>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="name" class="col-sm-4 control-label no-padding-right">资源别名</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" id="nameAlias" name="nameAlias" value="${resources.nameAlias}" placeholder="资源别名">
+									<label class="error" for="name" style="display:none;">请填写资源别名</label>
+									<%--<label class="error" for="name" style="display:none;">资源别名已存在</label>--%>
 								</div>
 							</div>
 							<div class="form-group">
@@ -191,7 +197,7 @@
 									<label class="error" for="callbackStatus" style="display:none;">请选择是否支持回调</label>
 								</div>
 							</div>
-							<div class="form-group">
+							<%--<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">启用状态</label>
 								<div class="col-sm-4">
 									<select id="status" name="status" style="width:250px;" class="multiselect1">
@@ -201,7 +207,7 @@
 									</select>
 									<label class="error" for="status" style="display:none;">请选择启用状态</label>
 								</div>
-							</div>
+							</div>--%>
 							<%--<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">上传图片</label>
 								<div class="col-sm-4" <c:if test="${fn:length(resources.imageUrl) > 0 }">style="display:none;" </c:if>>
@@ -338,8 +344,6 @@
 		}
 		
 		$("#submitInput").click(function(){
-			var status = $.trim($("#status").val());
-			//var flie = $.trim($("#flie").val());
 			var description = $.trim($("#description").val());
 			var dailyLimit = $.trim($("#dailyLimit").val());
 			var num = 0;
@@ -358,25 +362,11 @@
 				}
 			}
 			
-			if(status == ""){
-				$("#status").next().show();
-			}else{
-				num = num + 1;
-				$("#status").next().hide();
+			if(num ==1){
+                $("#submitInput").attr("disabled","true");
+                $("#resources_form").submit();
 			}
 
-			
-			if(description.length > 150){
-				$("#description").next().show();
-			}else{
-				num = num + 1;
-				$("#description").next().hide();
-			}
-
-			if(num == 3){
-				$("#submitInput").attr("disabled","true");
-				$("#resources_form").submit();
-			}
 
 		});
 		

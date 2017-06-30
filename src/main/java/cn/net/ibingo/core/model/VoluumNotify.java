@@ -39,6 +39,12 @@ public class VoluumNotify {
 
     private int dataType;//0表示总数据。1表示总数据且成功下发渠道的数据
 
+    private int conversNum;//统计总数（转化数）此字段只接收查询数据
+
+    private String offerNameAlias;//广告别名   此字段只接收查询数据
+
+    private Float subscriptionRate;//广告和渠道之间的分配比例   此字段只接收查询数据
+
     public Integer getId() {
         return id;
     }
@@ -181,5 +187,29 @@ public class VoluumNotify {
 
     public void setDataType(int dataType) {
         this.dataType = dataType;
+    }
+
+    public int getConversNum() {
+        return conversNum;
+    }
+
+    public void setConversNum(int conversNum) {
+        this.conversNum = conversNum;
+    }
+
+    public String getOfferNameAlias() {
+        return offerNameAlias;
+    }
+
+    public void setOfferNameAlias(String offerNameAlias) {
+        this.offerNameAlias = offerNameAlias;
+    }
+
+    public Float getSubscriptionRate() {
+        return subscriptionRate;
+    }
+
+    public void setSubscriptionRate(Float subscriptionRate) {
+        this.subscriptionRate = subscriptionRate;
     }
 }

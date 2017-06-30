@@ -53,6 +53,9 @@ public class DateUtils {
 	public static String formatDate(Date date) {
 		return sdf2.format(date);
 	}
+	public static String formatDateToString(Date date) {
+		return sdf3.format(date);
+	}
 	public static String formatDateTimeAll(Date date) {
 		return sdf1.format(date);
 	}

@@ -51,16 +51,12 @@
 							<div class="row">
 								<div class="col-lg-12 col-sm-12 col-xs-12">
 									<div class="form-group">
-										<input type="text" class="form-control" name="keyword" id="keyword" value="${queryBean.keyword }" placeholder="渠道名称/渠道编号">
+										<input type="text" class="form-control" name="keyword" id="keyword" value="${queryBean.keyword }" placeholder="渠道名称">
 									</div>
 									<button type="submit" class="btn btn-primary">
 										<i class="fa fa-search"></i> 查询
 									</button>
 									<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/fristChannel/doSave?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}"><i class="fa fa-plus"></i> 新增</a>
-									<%--<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/fristChannel/test?keyword=${queryBean.keyword}"><i class="fa fa-plus"></i> 并发测试</a>
-									<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/fristChannel/channlOne?keyword=${queryBean.keyword}"><i class="fa fa-plus"></i> 渠道1并发测试</a>
-									<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/fristChannel/channlTwo?keyword=${queryBean.keyword}"><i class="fa fa-plus"></i> 渠道2并发测试</a>
-									<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/fristChannel/channlThree?keyword=${queryBean.keyword}"><i class="fa fa-plus"></i> 渠道3并发测试</a>--%>
 								</div>
 							</div>
 						</form>
@@ -69,11 +65,10 @@
 							<table class="table table-hover table-bordered table-striped table-condensed flip-content">
 								<thead class="flip-content bordered-palegreen">
 									<tr>
-										<th class="text-center" style="width:120px;">渠道编号</th>
 										<th class="text-center" style="width:250px;">渠道名称</th>
 										<th class="text-center" style="width:100px;">分成比例</th>
 										<th class="text-center" style="width:190px;">描述</th>
-										<th class="text-center" style="width:100px;">智能推广链接</th>
+										<th class="text-center" style="width:100px;">负责人</th>
 										<th class="text-center" style="width:180px;">更新时间</th>
 										<th></th>
 									</tr>
@@ -81,7 +76,6 @@
 								<tbody>
 									<c:forEach items="${pageDataList.pageRecords}" var="item">
 										<tr>
-											<td class="text-center" style="word-break:break-all;">${item.code }</td>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
 											<td class="text-center" style="word-break:break-all;">${item.dividedRate }</td>
 											<c:choose>
@@ -92,9 +86,10 @@
 													<td class="text-center">-</td>
 												</c:otherwise>
 											</c:choose>
-											<td class="text-center" style="word-break:break-all;">
+											<td class="text-center" style="word-break:break-all;">${item.leader }</td>
+											<%--<td class="text-center" style="word-break:break-all;">
 												<a href="${pageContext.request.contextPath}/fristPromotion/list?pid=${item.id}" style="color:#72ACE3;text-decoration:underline;">查看</a>
-											</td>
+											</td>--%>
 											<td class="text-center"><fmt:formatDate value="${item.modifyDate}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 											<td class="text-center">
 												<a href="${pageContext.request.contextPath}/fristChannel/doUpdate/${item.id}?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a> 

@@ -180,44 +180,65 @@
 								<span class="menu-text">首页</span>
 							</a>
 						</li>--%>
-						<%--<li id="li1">
-							<a href="javascript:void(0);" class="menu-dropdown">
-								<i class="menu-icon fa fa-briefcase"></i> 
-								<span class="menu-text">广告数据查询</span>
-							</a>
-							<ul class="submenu">
-								<c:if test="${sessionScope.current_user.userRole != 2}">
-								<li>
-									<a href="${pageContext.request.contextPath}/notifyChannel/list"> 
-										<i class="menu-icon typcn typcn-clipboard"></i>
-										<span class="menu-text">按渠道查询</span>
-									</a>
-								</li>
-								</c:if>
-								<c:if test="${sessionScope.current_user.userRole == 2 || sessionScope.current_user.userRole == 1}">
-								<li>
-									<a href="${pageContext.request.contextPath}/notifyAnalysis/list"> 
-										<i class="menu-icon typcn typcn-document-text"></i>
-										<span class="menu-text">按广告查询</span>
-									</a>
-								</li>
-								</c:if>
-							</ul>
-						</li>--%>
-						<li id="li1">
+
+							<li id="li0">
 								<a href="javascript:void(0);" class="menu-dropdown">
 									<i class="menu-icon fa fa-briefcase"></i>
-									<span class="menu-text">数据查询</span>
+									<span class="menu-text">原始数据查询</span>
 								</a>
 								<ul class="submenu">
+									<li>
+										<a href="${pageContext.request.contextPath}/voluum/list">
+											<i class="menu-icon typcn typcn-clipboard"></i>
+											<span class="menu-text">数据查询</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li id="li1">
+								<a href="javascript:void(0);" class="menu-dropdown">
+									<i class="menu-icon fa fa-briefcase"></i>
+									<span class="menu-text">统计数据查询</span>
+								</a>
+								<ul class="submenu">
+									<c:if test="${sessionScope.current_user.userRole == 1}">
 										<li>
-											<a href="${pageContext.request.contextPath}/voluum/list">
+											<a href="${pageContext.request.contextPath}/offerStatistics/list">
 												<i class="menu-icon typcn typcn-clipboard"></i>
-												<span class="menu-text">数据查询</span>
+												<span class="menu-text">按广告查询</span>
 											</a>
 										</li>
+										<li>
+											<a href="${pageContext.request.contextPath}/trafficSourceStatistics/list">
+												<i class="menu-icon typcn typcn-document-text"></i>
+												<span class="menu-text">按渠道查询</span>
+											</a>
+										</li>
+										<li>
+											<a href="${pageContext.request.contextPath}/trafficSourceStatistics/rateList">
+												<i class="menu-icon typcn typcn-clipboard"></i>
+												<span class="menu-text">以渠道身份查询</span>
+											</a>
+										</li>
+									</c:if>
+									<c:if test="${sessionScope.current_user.userRole == 2 }">
+										<li>
+											<a href="${pageContext.request.contextPath}/advertisersStatistics/list">
+												<i class="menu-icon typcn typcn-document-text"></i>
+												<span class="menu-text">按广告主查询</span>
+											</a>
+										</li>
+									</c:if>
+									<c:if test="${sessionScope.current_user.userRole == 3 }">
+										<li>
+											<a href="${pageContext.request.contextPath}/trafficSourceStatistics/rateList">
+												<i class="menu-icon typcn typcn-document-text"></i>
+												<span class="menu-text">按渠道查询</span>
+											</a>
+										</li>
+									</c:if>
 								</ul>
-						</li>
+							</li>
 						<c:if test="${sessionScope.current_user.userRole == 1 }">
 						<li id="li2">
 							<a href="javascript:void(0);" class="menu-dropdown">
@@ -370,14 +391,20 @@
 			$("#li2").find('li').removeAttr("class");
 			$("#li3").find('li').removeAttr("class");
 			$("#li4").find('li').removeAttr("class");
-			
-			if(oneTree == 1){
+            if(oneTree == 0){
+                $("#li0").attr("class","active open");
+                if(twoTree == 1){
+                    $("#li0").children().eq(1).children().eq(0).attr("class","active");
+                }
+            }else if(oneTree == 1){
 				$("#li1").attr("class","active open");
 				if(twoTree == 1){
 					$("#li1").children().eq(1).children().eq(0).attr("class","active");
 				}else if(twoTree == 2){
 					$("#li1").children().eq(1).children().eq(1).attr("class","active");
-				}
+				}else if(twoTree == 3){
+                    $("#li1").children().eq(1).children().eq(2).attr("class","active");
+                }
 			}else if(oneTree == 2){
 				$("#li2").attr("class","active open");
 				if(twoTree == 1){
@@ -405,8 +432,6 @@
 				if(twoTree == 1){
 					$("#li4").children().eq(1).children().eq(0).attr("class","active");
 				}
-			}else if(oneTree == 0){
-				$("#li0").attr("class","active");
 			}
 		});
 	</script>

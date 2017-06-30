@@ -2,9 +2,7 @@ package advert_manager;
 
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.net.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -38,28 +36,121 @@ public class test {
 		//updateTrafficSource();
 		//deleteTracfficSource();
 		try {
-			uploadFile();
-		} catch (UnsupportedEncodingException e) {
+			//uploadFile();
+			downloadFile("","","");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	public static void uploadFile() throws UnsupportedEncodingException {
 
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("content", URLDecoder.decode("中国","UTF-8"));
-		//HttpUtil httpUtil = new HttpUtil();
-		HttpRequester httpUtil = new HttpRequester();
-		try {
-			HttpRespons sr = httpUtil.sendPost("http://localhost:9090/uploadMesFile", params, null);
-			if ("200".equals(sr.getCode())) {
-				System.out.println("渠道上传成功");
+			Map<String, Object> params = new HashMap<String, Object>();
+			//params.put("content", URLEncoder.encode("中文的撒大大是的大大是的", "UTF-8"));
+			params.put("fileName", "ph");
+		   HttpRequester httpUtil = new HttpRequester();
+			//HttpUtil httpUtil = new HttpUtil();
+			try {
+				//HttpRespons sr = httpUtil.sendPost("http://u.nicegame.me/api/uploadMesFile", params, null);
+				//HttpRespons sr = httpUtil.sendPost("http://u.nicegame.me/api/downloadImage", params, null);
+				//HttpRespons sr = httpUtil.sendPost("http://localhost:9090/downloadImageProject", params, null);
+				HttpRespons sr = httpUtil.sendPost("http://yxj.ngrok.cc/downloadImage", params, null);
+
+				if (sr != null && "200".equals(sr.getCode())) {
+					System.out.println("渠道上传成功");
+				}
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	}
+	public static void downloadFile(String link,String p,String name) {
+
+		String urlStr="http://u.nicegame.me/api/downloadImage";//http://yxj.ngrok.cc/downloadImage";
+		String path= p;
+		String fileName=name;
+		FileOutputStream output = null;
+		InputStream input = null;
+		HttpURLConnection conn = null;
+		System.out.println("downloadFile1 = ");
+		try {
+            /*
+             * 通过URL取得HttpURLConnection
+             * 要网络连接成功，需在AndroidMainfest.xml中进行权限配置
+             * <uses-permission android:name="android.permission.INTERNET" />
+             */
+			URL url=new URL(urlStr);
+			conn=(HttpURLConnection)url.openConnection();
+			// conn.setRequestProperty("Connection", "Keep-Alive");
+			conn.setRequestMethod("POST");
+			conn.setUseCaches(false);
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+
+			StringBuffer param = new StringBuffer();
+			param.append("&");
+			param.append("fileName").append("=").append("ph");
+
+			conn.getOutputStream().write(param.toString().getBytes());
+			conn.getOutputStream().flush();
+			conn.getOutputStream().close();
+
+			input = conn.getInputStream();
+
+
+			//String SDCard=Environment.getExternalStorageDirectory()+"";
+			//String pathName=SDCard+"/"+path+"/"+fileName;//文件存储路径
+
+			File file=new File("");
+
+
+
+			System.out.println("downloadFile1 = ");
+			if(file.exists()){
+				System.out.println("exits");
+				return;
+			}else{
+				int len;
+				String dir="D:\\test/b.jpg";//SDCard+"/"+path;
+				file = new File(dir);//新建文件夹
+				file.createNewFile();//新建文件
+
+				//读取大文件
+				try {
+					output=new FileOutputStream(file);
+				} catch(FileNotFoundException e) {
+
+				}
+
+				byte[] bs = new byte[1024];
+				// 读取到的数据长度
+				while((len = input.read(bs))!=-1){
+					output.write(bs,0,len);
+				}
+
+				// output.write(Buffer,0,1);
+				output.flush();
+
+
+				//handler.sendEmptyMessage(0);
+
+			}
+
+			output.close();
+			input.close();
+			conn.disconnect();
+
+
+
+		} catch (Exception e) {
+
+			System.out.println("downloadFile e = " + e.getClass().getName());
 		}
+
 	}
 
-		public void params(){
+
+	public void params(){
 			String [] strArray = {"efadf425-0425-4276-933e-91539abd32d7","8efbfa54-0f2e-4bd4-8369-fb1aa2532b69","ee3a6d4e-834c-4f45-babe-6655cf96bcd3"};
 			String str = "";
 			for(int i = 1;i < 100;i++){
@@ -81,6 +172,36 @@ public class test {
 			}
 		}
 
+	public InputStream postMethodHanya(String param, String urlStr,
+									   String contentType) {
+
+		InputStream is = null;
+		try {
+			byte[] xmlData = param.getBytes("UTF-8");
+			URL url = new URL(urlStr);
+			URLConnection urlCon = url.openConnection();
+			urlCon.setDoOutput(false);
+			urlCon.setDoInput(true);
+			urlCon.setConnectTimeout(40000);
+			urlCon.setReadTimeout(40000);
+			urlCon.setUseCaches(false);
+			//          urlCon.setRequestProperty("Content-Type", contentType);
+			//          urlCon.setRequestProperty("Content-length",
+			//                  String.valueOf(xmlData.length));
+			//          // urlCon.setFixedLengthStreamingMode(xmlData.length);
+			//          DataOutputStream printout = new DataOutputStream(
+			//                  urlCon.getOutputStream());
+			//          printout.write(xmlData);
+			//          printout.flush();
+			//          printout.close();
+			is = urlCon.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return is;
+	}
 
 
 

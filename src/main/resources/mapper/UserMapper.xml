@@ -178,7 +178,7 @@
 		select <include refid="Base_Column_List" /> from t_user where username = #{username} limit 1
 	</select>
 	
-	<select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.UserQueryBean" resultType="java.lang.Integer">
+<!--	<select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.UserQueryBean" resultType="java.lang.Integer">
 		select count(id) from t_user 
 		where
 			id > 2 
@@ -208,7 +208,7 @@
 		order by 
 			create_date desc 
 		limit ${startIndex}, ${pageSize}
-	</select>
+	</select>-->
 	
 	<select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select 
@@ -216,4 +216,25 @@
 		from t_user 
 		where username = #{username}
 	</select>
+
+  <select id="selectCount" parameterType="cn.net.ibingo.core.query.UserQueryBean" resultType="java.lang.Integer">
+    select count(id) from t_user
+    where
+    id > 2
+    <if test="keyword != null and keyword != ''">
+      and ( username like '%${keyword}%' )
+    </if>
+  </select>
+  <select id="selectList" parameterType="cn.net.ibingo.core.query.UserQueryBean" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from t_user
+    where
+    id > 2
+    <if test="keyword != null and keyword != ''">
+      and ( username like '%${keyword}%' )
+    </if>
+    order by
+    create_date desc
+    limit ${startIndex}, ${pageSize}
+  </select>
+
 </mapper>

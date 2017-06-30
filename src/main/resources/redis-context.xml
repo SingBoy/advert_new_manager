@@ -16,7 +16,6 @@
         <property name="testOnBorrow" value="true"/> 
 	</bean>
 	<bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
- 		<property name="hostName" value=""/>
         <property name="port" value="6379"/>
         <property name="poolConfig" ref="poolConfig"/>
 	</bean>

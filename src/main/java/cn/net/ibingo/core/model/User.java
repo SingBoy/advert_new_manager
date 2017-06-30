@@ -13,7 +13,7 @@ public class User {
 
     private Integer userRole;
 
-    private Integer userRoleId;
+    private Integer userRoleId;//账号对应广告主/渠道的id
 
     private String email;
 

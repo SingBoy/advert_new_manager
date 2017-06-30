@@ -10,11 +10,13 @@ import java.util.List;
 public interface DistributionRateMapper {
 	
 
-    List<DistributionRate> selectByPrimaryKey(String id);
+    List<DistributionRate> selectByTrafficeId(String trafficId);
     
     int insertSelective(DistributionRate dr);
 
     int deleteDistributionByTrafficId(String trafficId);
 
     Float selectByTrafficIdAndOfferId(@Param("voluumTrafficSourceId")String voluumTrafficSourceId, @Param("voluumOfferId")String voluumOfferId);
+
+    List<DistributionRate> selectAll();
 }

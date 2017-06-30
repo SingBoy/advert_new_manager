@@ -2,11 +2,13 @@ package cn.net.ibingo.core.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 
+import cn.net.ibingo.common.utils.HttpRespons;
 import cn.net.ibingo.common.utils.HttpUtil;
 import cn.net.ibingo.common.utils.Test;
 import cn.net.ibingo.core.model.VoluumNotify;
@@ -36,9 +38,6 @@ public class AdvertisersController extends BaseController{
 	
 	@Autowired
 	private VoluumAffiliateNetworkService voluumAffiliateNetworkServiceImpl;
-
-	private int index = 0;
-	private Integer[] strArray = { Integer.valueOf(65), Integer.valueOf(91), Integer.valueOf(92) };
 
 	@RequestMapping(value = "/list")
 	public String list(AdvertisersQueryBean queryBean, ModelMap modelMap){
@@ -114,48 +113,12 @@ public class AdvertisersController extends BaseController{
 			params.put("cid",notify.getClickId());
 			HttpUtil httpUtil = new HttpUtil();
 			httpUtil.sendHttpClientPost("http://t.nicegame.me/postback",params,null);
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
 	}
 
-	@ResponseBody
-	@RequestMapping({"/setTimeoutTask"})
-	public void setTimeoutTask()
-	{
-		Timer timer=new Timer();
-		timer.schedule(new TimerTask(){
-			@Override
-			public void run() {
-				ss();
-			}
-		}, 0,3000);
-
-	}
-
-	public synchronized void ss()
-	{
-		Integer str = null;
-		if (this.index > 3) {
-			this.index = 0;
-		}
-		if (this.index == 0) {
-			str = this.strArray[0];
-		}
-		if (this.index == 1) {
-			str = this.strArray[1];
-		}
-		if (this.index == 2) {
-			str = this.strArray[2];
-		}
-		Test.requestVoluumOne(this.index, str);
-		log.info(this.index + "-----------------------------------------------------------------------------------" + str);
-		if (this.index == 2) {
-			this.index = 0;
-		} else {
-			this.index += 1;
-		}
-	}
-	
 }

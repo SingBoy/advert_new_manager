@@ -1,10 +1,12 @@
 package cn.net.ibingo.core.dao;
 
   import cn.net.ibingo.common.pagination.model.PaginationList;
+  import cn.net.ibingo.core.model.OfferStatistics;
   import cn.net.ibingo.core.model.VoluumNotify;
 import cn.net.ibingo.core.query.VoluumNotifyQueryBean;
+  import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+  import java.util.List;
 
 public interface VoluumNotifyMapper {
 	
@@ -18,4 +20,10 @@ public interface VoluumNotifyMapper {
     int updateDateType(String clickId);
 
     int delete(int id);
+
+    public List<VoluumNotify> selectOfferStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate);
+
+    public List<VoluumNotify> selectTrafficSourceStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate);
+
+    public List<VoluumNotify> selectAdvertisersStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate);
 }

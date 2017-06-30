@@ -109,25 +109,27 @@
 							<table class="table table-hover table-bordered table-striped table-condensed flip-content">
 								<thead class="flip-content bordered-palegreen">
 									<tr>
-										<th class="text-center" style="width:50px;">ID</th>
+										<%--<th class="text-center" style="width:50px;">ID</th>--%>
 										<th class="text-center" style="width:250px;">资源名称</th>
 										<th class="text-center" style="width:200px;">广告主</th>
+										<th class="text-center" style="width:200px;">资源别名</th>
 										<th class="text-center" style="width:100px;">国家</th>
 										<th class="text-center" style="width:50px;">价格</th>
-										<th class="text-center" style="width:70px;">原始链接</th>
-										<th class="text-center" style="width:140px;">活动时间</th>
+										<%--<th class="text-center" style="width:70px;">原始链接</th>
+										<th class="text-center" style="width:140px;">活动时间</th>--%>
 										<th class="text-center" style="width:50px;">日限量</th>
-										<th class="text-center" style="width:100px;">描述</th>
-										<th class="text-center" style="width:70px;">启用状态</th>
+										<th class="text-center" style="width:150px;">描述</th>
+										<th class="text-center" style="width:70px;">是否支持回调</th>
 										<th></th>
 									</tr>
 								</thead>
 								<tbody>
 									<c:forEach items="${pageDataList.pageRecords}" var="item">
 										<tr>
-											<td class="text-center" style="word-break:break-all;">${item.id }</td>
+											<%--<td class="text-center" style="word-break:break-all;">${item.id }</td>--%>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
 											<td class="text-center" style="word-break:break-all;">${item.adsName }</td>
+											<td class="text-center" style="word-break:break-all;">${item.nameAlias }</td>
 											<td class="text-center" style="word-break:break-all;">
 												<label data-toggle="tooltip" data-placement="bottom" data-original-title="${item.mccGroup }">
 													<c:if test="${fn:length(item.mccGroup) > 10}">	
@@ -140,13 +142,13 @@
 											</td>
 
 											<td class="text-center" style="word-break:break-all;">${item.price }</td>
-											<td class="text-center" style="word-break:break-all;">
+											<%--<td class="text-center" style="word-break:break-all;">
 												<label><button type="button" class="btn" onclick="buttonLink('${item.targetLink}');">查看</button></label>
 											</td>
 											<td class="text-center">
 												<fmt:formatDate value="${item.activityStart}" pattern="yyyy-MM-dd HH:mm:ss" />-
 												<fmt:formatDate value="${item.activityEnd}" pattern="yyyy-MM-dd HH:mm:ss" />
-											</td>
+											</td>--%>
 											<c:choose>
 												<c:when test="${item.dailyLimit ne null}">
 													<td class="text-center" style="word-break:break-all;">${item.dailyLimit}</td>
@@ -164,11 +166,11 @@
 												</c:otherwise>
 											</c:choose>
 											<td class="text-center" style="word-break:break-all;">
-												<c:if test="${item.status== 1}">
-													 <font color="green">开启</font>
+												<c:if test="${item.callbackStatus== 1}">
+													 <font color="green">是</font>
 												</c:if>
-												<c:if test="${item.status== 0}">
-													<font color="red">关闭</font>
+												<c:if test="${item.callbackStatus== 0}">
+													<font color="red">否</font>
 												</c:if>
 											</td>
 											<td class="text-center">

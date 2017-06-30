@@ -41,22 +41,10 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public PaginationList<User> list(UserQueryBean queryBean) {
-		queryBean.setPageSize(50);
-		boolean flag = false;
-		if(queryBean.getUserRole() == 3 || queryBean.getUserRole() == 4){
-			if( queryBean.getUserRoleIds() != null && queryBean.getUserRoleIds().size() > 0){
-				flag = true;
-			}
-		} else {
-			flag = true;
-		}
-		if(flag){
-			Integer totalCount = userMapper.selectCountByQueryBean(queryBean);
-			List<User> list = userMapper.selectByQueryBean(queryBean);
+			Integer totalCount = userMapper.selectCount(queryBean);
+			List<User> list = userMapper.selectList(queryBean);
 			SimplePaginatedList<User> pList = new SimplePaginatedList<User>(list, queryBean.getCurrentPage(), queryBean.getPageSize(), totalCount);
 			return pList;
-		}
-		return null;
 	}
 
 	@Override

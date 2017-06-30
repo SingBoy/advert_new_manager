@@ -78,7 +78,7 @@ public class FristChannelController extends BaseController{
 		modelMap.addAttribute(ConstantConfig.FRISTCHANNEL,fristChannel);
 		//资源名称
 		List<Resources> listResources = resourcesService.selectAll(null);
-		List<DistributionRate> listDisRate =  distributionRateService.selectAll(fristChannel.getVoluumTrafficSourceId());
+		List<DistributionRate> listDisRate =  distributionRateService.selectByTrafficeId(fristChannel.getVoluumTrafficSourceId());
 		Map<String,DistributionRate> rateMap = new HashMap<String,DistributionRate>();
 		List<Resources> resourcesList = new ArrayList<Resources>();
 		boolean flg = false;
@@ -145,66 +145,5 @@ public class FristChannelController extends BaseController{
 		return listFristChannel;
 	}
 
-	@RequestMapping(value = "/test")
-	public void test(ModelMap modelMap,FristChannelQueryBean queryBean) {
-		final Test test =new Test();
-		String [] strArray = {"efadf425-0425-4276-933e-91539abd32d7","8efbfa54-0f2e-4bd4-8369-fb1aa2532b69","ee3a6d4e-834c-4f45-babe-6655cf96bcd3"};
-		String str = "";
-		for(int i = 1;i < 5000;i++){
-			if(i % 3 == 0){
-				str = strArray[2];
-			}else if(i % 2 == 0){
-				str = strArray[1];
-			}else{
-				str = strArray[0];
-			}
-			final int count = i;
-			final String str1 = str;
-			new Thread(){
-				public void run(){
-					test.requestVoluum(0,str1);
-				}
-			}.start();
-		}
-	}
-	@RequestMapping(value = "/channlOne")
-	public void channlOne(ModelMap modelMap,FristChannelQueryBean queryBean) {
-		final Test test =new Test();
-		final String str = "efadf425-0425-4276-933e-91539abd32d7";
-		for(int i = 1;i < 3000;i++){
-			final int count = i;
-			new Thread(){
-				public void run(){
-					test.requestVoluum(count,str);
-				}
-			}.start();
-		}
-	}
-	@RequestMapping(value = "/channlTwo")
-	public void channlTwo(ModelMap modelMap,FristChannelQueryBean queryBean) {
-		final Test test =new Test();
-		final String str = "8efbfa54-0f2e-4bd4-8369-fb1aa2532b69";
-		for(int i = 1;i < 1000;i++){
-			final int count = i;
-			new Thread(){
-				public void run(){
-					test.requestVoluum(count,str);
-				}
-			}.start();
-		}
-	}
-	@RequestMapping(value = "/channlThree")
-	public void channlThree(ModelMap modelMap,FristChannelQueryBean queryBean) {
-		final Test test =new Test();
-		final String str = "ee3a6d4e-834c-4f45-babe-6655cf96bcd3";
-		for(int i = 1;i < 3000;i++){
-			final int count = i;
-			new Thread(){
-				public void run(){
-					test.requestVoluum(count,str);
-				}
-			}.start();
-		}
-	}
 
 }

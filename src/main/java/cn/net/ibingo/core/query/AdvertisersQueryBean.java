@@ -5,7 +5,9 @@ import cn.net.ibingo.common.utils.QueryBean;
 public class AdvertisersQueryBean extends QueryBean{
 	
 	private String keyword;
-	
+
+
+
 	private String oneTree = "2";
 	
 	private String twoTree = "2";

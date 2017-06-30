@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import cn.net.ibingo.common.pagination.model.SimplePaginatedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,12 +21,10 @@ import cn.net.ibingo.common.pagination.model.PaginationList;
 import cn.net.ibingo.common.utils.ConstantConfig;
 import cn.net.ibingo.core.model.Advertisers;
 import cn.net.ibingo.core.model.FristChannel;
-import cn.net.ibingo.core.model.TwoChannel;
 import cn.net.ibingo.core.model.User;
 import cn.net.ibingo.core.query.UserQueryBean;
 import cn.net.ibingo.core.service.AdvertisersService;
 import cn.net.ibingo.core.service.FristChannelService;
-import cn.net.ibingo.core.service.TwoChannelService;
 import cn.net.ibingo.core.service.UserService;
 
 @Controller
@@ -41,31 +40,22 @@ public class UserController extends BaseController{
 	@Autowired
 	private FristChannelService fristChannelService;
 	
-	@Autowired
-	private TwoChannelService twoChannelService;
-	
+
 	@RequestMapping(value = "/list")
 	public String list(HttpSession session,UserQueryBean queryBean, ModelMap modelMap){
 		User user = new User();
 		user = (User) session.getAttribute(ConstantConfig.USER);
 		queryBean.setUserRole(user.getUserRole());
-		if(user.getUserRole().equals(3)){
-			List<Integer> userRoleIds = new ArrayList<Integer>();
-			List<TwoChannel> listTwoChannel = twoChannelService.selectByPid(user.getUserRoleId());
-			if(listTwoChannel != null){
-				for (TwoChannel twoChannel : listTwoChannel) {
-					userRoleIds.add(twoChannel.getId());
-				}
-				if(userRoleIds.size() > 0){
-					queryBean.setUserRoleIds(userRoleIds);	
-				} else {
-					queryBean.setUserRoleIds(null);
-				}
-			} else {
-				queryBean.setUserRoleIds(null);
-			}
+		PaginationList<User> pageDataList = null;
+		//当用户权限为1（超级管理员）时，查看所有人员列表
+		if(user.getUserRole().equals(ConstantConfig.SUPER_MANAGER)){
+			pageDataList = userService.list(queryBean);
+		}else{
+			//当登陆用户权限为广告主或渠道时，只能查看自己的信息
+			List<User> listUser = new ArrayList<User>();
+			listUser.add(user);
+			pageDataList = new SimplePaginatedList<User>(listUser,0);
 		}
-		PaginationList<User> pageDataList = userService.list(queryBean);
 		modelMap.addAttribute(ConstantConfig.PAGE_DATA_LIST, pageDataList);
 		modelMap.addAttribute(ConstantConfig.QUERYBEAN,queryBean);
 		return "pager/user/list";
@@ -75,18 +65,17 @@ public class UserController extends BaseController{
 	public String doSave(HttpSession session,HttpServletRequest request, ModelMap modelMap,UserQueryBean queryBean) {
 		User user = new User();
 		user = (User) session.getAttribute(ConstantConfig.USER);
-		List<TwoChannel> listTwoChannel = new ArrayList<TwoChannel>();
+		/*List<TwoChannel> listTwoChannel = new ArrayList<TwoChannel>();
 		if(user.getUserRole().equals(3)){
 			listTwoChannel = twoChannelService.selectByPid(user.getUserRoleId());
 			modelMap.addAttribute(ConstantConfig.LISTTWOCHANNEL,listTwoChannel);
-		}else{
+		}else{*/
 			//广告主
 			List<Advertisers> listAdvertisers = advertisersService.selectAll();
 			modelMap.addAttribute(ConstantConfig.LISTADVERTISERS,listAdvertisers);
 			//渠道
 			List<FristChannel> listFristChannel = fristChannelService.selectAll();
 			modelMap.addAttribute(ConstantConfig.LISTFRISTCHANNEL,listFristChannel);
-		}
 		modelMap.addAttribute(ConstantConfig.QUERYBEAN,queryBean);
 		return "pager/user/form";
 	}
@@ -95,18 +84,18 @@ public class UserController extends BaseController{
 	public String doUpdate(@PathVariable Integer id,HttpSession session, ModelMap modelMap,UserQueryBean queryBean) {
 		User user = new User();
 		user = (User) session.getAttribute(ConstantConfig.USER);
-		List<TwoChannel> listTwoChannel = new ArrayList<TwoChannel>();
+		/*List<TwoChannel> listTwoChannel = new ArrayList<TwoChannel>();
 		if(user.getUserRole().equals(3)){
 			listTwoChannel = twoChannelService.selectByPid(user.getUserRoleId());
 			modelMap.addAttribute(ConstantConfig.LISTTWOCHANNEL,listTwoChannel);
-		}else{
+		}else{*/
 			//广告主
 			List<Advertisers> listAdvertisers = advertisersService.selectAll();
 			modelMap.addAttribute(ConstantConfig.LISTADVERTISERS,listAdvertisers);
 			//渠道
 			List<FristChannel> listFristChannel = fristChannelService.selectAll();
 			modelMap.addAttribute(ConstantConfig.LISTFRISTCHANNEL,listFristChannel);
-		}
+		/*}*/
 		
 		User u = userService.get(id);
 		modelMap.addAttribute(ConstantConfig.USERBEAN,u);

@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.Resources" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="name_alias" property="nameAlias" jdbcType="VARCHAR" />
     <result column="ads_id" property="adsId" jdbcType="INTEGER" />
     <result column="price" property="price" jdbcType="REAL" />
     <result column="activity_start" property="activityStart" jdbcType="TIMESTAMP" />
@@ -27,28 +28,36 @@
 
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, ads_id, price, activity_start, activity_end, activity_price, target_link, 
+    id, name,name_alias, ads_id, price, activity_start, activity_end, activity_price, target_link,
     is_support_param, status, image_url, download_url, daily_limit, description, 
     c1_key, c2_key, type_key, c3_key, create_date, modify_date, callback_status,voluum_offer_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_config_resources
-    where id = #{id,jdbcType=INTEGER}
+   SELECT a.id, a.name,name_alias, a.ads_id, a.price, a.activity_start, a.activity_end, a.activity_price, a.target_link, a.type_key, a.c3_key,
+	a.is_support_param, a.status, a.image_url, a.download_url, a.daily_limit, a.description, a.create_date,a.c1_key, a.c2_key,
+	a.modify_date,GROUP_CONCAT(DISTINCT(c.country)) mccGroup, GROUP_CONCAT(DISTINCT(d.operator)) mncGroup,b.name adsName, a.callback_status,a.voluum_offer_id
+	FROM t_config_resources a
+	LEFT JOIN t_base_advertisers b ON a.`ads_id` = b.`id`
+	LEFT JOIN (
+		SELECT a.id,a.pid,b.country FROM t_config_resources_mcc a, t_base_mcc b WHERE a.mcc_id = b.id
+	) c ON a.`id` = c.pid
+	LEFT JOIN (
+		SELECT a.id,a.pid,b.`operator` FROM t_config_resources_mnc a, t_base_mnc b WHERE a.mnc_id = b.id
+	) d ON c.id = d.pid
+    where a.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_config_resources
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="cn.net.ibingo.core.model.Resources" >
-    insert into t_config_resources (id, name, ads_id, 
+    insert into t_config_resources (id, name,name_alias, ads_id,
       price, activity_start, activity_end, 
       activity_price, target_link, is_support_param, 
       status, image_url, download_url, 
       daily_limit, description, c1_key, c2_key, type_key, 
       c3_key, create_date, modify_date, callback_status)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{adsId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{nameAlias,jdbcType=VARCHAR}, #{adsId,jdbcType=INTEGER},
       #{price,jdbcType=REAL}, #{activityStart,jdbcType=TIMESTAMP}, #{activityEnd,jdbcType=TIMESTAMP}, 
       #{activityPrice,jdbcType=REAL}, #{targetLink,jdbcType=VARCHAR}, #{isSupportParam,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{imageUrl,jdbcType=VARCHAR}, #{downloadUrl,jdbcType=VARCHAR}, 
@@ -65,6 +74,9 @@
       </if>
       <if test="name != null" >
         name,
+      </if>
+      <if test="nameAlias != null" >
+        name_alias,
       </if>
       <if test="adsId != null" >
         ads_id,
@@ -135,6 +147,9 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
+      <if test="nameAlias != null" >
+        nameAlias,
+      </if>
       <if test="adsId != null" >
         #{adsId,jdbcType=INTEGER},
       </if>
@@ -204,14 +219,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="cn.net.ibingo.core.model.Resources" >
     update t_config_resources
     <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="adsId != null" >
-        ads_id = #{adsId,jdbcType=INTEGER},
-      </if>
-      <if test="price != null" >
-        price = #{price,jdbcType=REAL},
+      <if test="nameAlias != null" >
+        name_alias = #{nameAlias,jdbcType=VARCHAR},
       </if>
       <if test="activityStart != null" >
         activity_start = #{activityStart,jdbcType=TIMESTAMP},
@@ -219,39 +228,13 @@
       <if test="activityEnd != null" >
         activity_end = #{activityEnd,jdbcType=TIMESTAMP},
       </if>
-      <if test="activityPrice != null" >
-        activity_price = #{activityPrice,jdbcType=REAL},
-      </if>
-      <if test="targetLink != null" >
-        target_link = #{targetLink,jdbcType=VARCHAR},
-      </if>
-      <if test="isSupportParam != null" >
-        is_support_param = #{isSupportParam,jdbcType=INTEGER},
-      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
-        image_url = #{imageUrl,jdbcType=VARCHAR},
-        download_url = #{downloadUrl,jdbcType=VARCHAR},
       <if test="dailyLimit != null" >
         daily_limit = #{dailyLimit,jdbcType=INTEGER},
       </if>
         description = #{description,jdbcType=VARCHAR},
-      <if test="c1Key != null" >
-         c1_key = #{c1Key,jdbcType=VARCHAR},
-      </if>
-      <if test="c2Key != null" >
-         c2_key = #{c2Key,jdbcType=VARCHAR},
-      </if>
-      <if test="typeKey != null" >
-         type_key = #{typeKey,jdbcType=VARCHAR},
-      </if>
-      <if test="c3Key != null" >
-         c3_key = #{c3Key,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null" >
-        create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="modifyDate != null" >
         modify_date = #{modifyDate,jdbcType=TIMESTAMP},
       </if>
@@ -265,23 +248,15 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.net.ibingo.core.model.Resources" >
     update t_config_resources
-    set name = #{name,jdbcType=VARCHAR},
-      ads_id = #{adsId,jdbcType=INTEGER},
+    set
+      name_alias = #{nameAlias,jdbcType=VARCHAR},
       price = #{price,jdbcType=REAL},
       activity_start = #{activityStart,jdbcType=TIMESTAMP},
       activity_end = #{activityEnd,jdbcType=TIMESTAMP},
       activity_price = #{activityPrice,jdbcType=REAL},
-      target_link = #{targetLink,jdbcType=VARCHAR},
-      is_support_param = #{isSupportParam,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
-      image_url = #{imageUrl,jdbcType=VARCHAR},
-      download_url = #{downloadUrl,jdbcType=VARCHAR},
       daily_limit = #{dailyLimit,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
-      c1_key = #{c1Key,jdbcType=VARCHAR},
-      c2_key = #{c2Key,jdbcType=VARCHAR},
-      type_key = #{typeKey,jdbcType=VARCHAR},
-      c3_key = #{c3Key,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       modify_date = #{modifyDate,jdbcType=TIMESTAMP},
       callback_status = #{callbackStatus,jdbcType=INTEGER}
@@ -362,7 +337,7 @@
   </select>
   
   <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.ResourcesQueryBean" resultMap="BaseResultMap">
-	select a.id, a.name, a.ads_id, a.price, a.activity_start, a.activity_end, a.activity_price, a.target_link, a.type_key, a.c3_key,
+	select a.id, a.name,a.name_alias, a.ads_id, a.price, a.activity_start, a.activity_end, a.activity_price, a.target_link, a.type_key, a.c3_key,
 	a.is_support_param, a.status, a.image_url, a.download_url, a.daily_limit, a.description, a.create_date,a.c1_key, a.c2_key,  
 	a.modify_date,group_concat(distinct(c.country)) mccGroup, group_concat(distinct(d.operator)) mncGroup,b.name adsName, a.callback_status
 	from t_config_resources a 
@@ -434,7 +409,7 @@
   
   
    <select id="selectBean" resultMap="BaseResultMap">
-	select a.id, a.name, a.ads_id, a.price, a.activity_start, a.activity_end, a.activity_price, a.target_link, a.type_key, a.c3_key,
+	select a.id, a.name,name_alias, a.ads_id, a.price, a.activity_start, a.activity_end, a.activity_price, a.target_link, a.type_key, a.c3_key,
 	a.is_support_param, a.status, a.image_url, a.download_url, a.daily_limit, a.description, a.create_date,a.c1_key, a.c2_key,  
 	a.modify_date,group_concat(distinct(c.country)) mccGroup, group_concat(distinct(d.operator)) mncGroup,b.name adsName, a.callback_status,a.voluum_offer_id
 	from t_config_resources a 

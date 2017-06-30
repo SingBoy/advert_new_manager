@@ -6,11 +6,11 @@
     <result column="traffic_source_id" property="trafficSourceId" jdbcType="VARCHAR" />
     <result column="traffic_source_name" property="trafficSourceName" jdbcType="VARCHAR" />
     <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
-    <result column="offer_name" property="offerName" jdbcType="INTEGER" />
-    <result column="affiliate_network_id" property="affiliateNetworkId" jdbcType="INTEGER" />
+    <result column="offer_name" property="offerName" jdbcType="VARCHAR" />
+    <result column="affiliate_network_id" property="affiliateNetworkId" jdbcType="VARCHAR" />
     <result column="affiliate_network_name" property="affiliateNetworkName" jdbcType="VARCHAR" />
     <result column="campaign_id" property="campaignId" jdbcType="VARCHAR" />
-    <result column="click_id" property="clickId" jdbcType="INTEGER" />
+    <result column="click_id" property="clickId" jdbcType="VARCHAR" />
     <result column="payout" property="payout" jdbcType="FLOAT" />
     <result column="country" property="country" jdbcType="INTEGER" />
     <result column="p1" property="p1" jdbcType="INTEGER" />
@@ -20,6 +20,9 @@
     <result column="p5" property="p5" jdbcType="VARCHAR" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="data_type" property="dataType" jdbcType="INTEGER" />
+    <result column="convers_num" property="conversNum" jdbcType="INTEGER" />
+    <result column="offer_name_alias" property="offerNameAlias" jdbcType="VARCHAR" />
+    <result column="subscription_rate" property="subscriptionRate" jdbcType="FLOAT" />
 
   </resultMap>
   <sql id="Base_Column_List" >
@@ -163,10 +166,10 @@
 	</select>
 	<select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.VoluumNotifyQueryBean" resultMap="BaseResultMap">
       SELECT
-          v.id, v.traffic_source_id, v.traffic_source_name, v.offer_id, v.offer_name, v.affiliate_network_id, v.affiliate_network_name, v.campaign_id, v.click_id, v.payout,t.country_zh_CN AS country,
+          v.id, v.traffic_source_id, v.traffic_source_name, v.offer_id, v.offer_name, v.affiliate_network_id, v.affiliate_network_name, v.campaign_id, v.click_id, v.payout,b.country AS country,
           v.p1, v.p2,v.p3,v.p4,v.p5,v.create_date,v.data_type
       FROM t_voluum_notify v
-      LEFT JOIN t_timezone_country t ON v.country = t.`country_ISO`
+      LEFT JOIN t_base_mcc b ON v.country = b.iso
 		where 1=1
 			<if test="keyword != null and keyword != ''">
 				and offer_name like '%${keyword}%'
@@ -192,5 +195,29 @@
   <delete id="delete" parameterType="java.lang.Integer">
     delete FROM t_voluum_notify where id = #{id,jdbcType=INTEGER}
   </delete>
+
+
+  <select id="selectOfferStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias as offer_name_alias,v.`traffic_source_id`,v.`traffic_source_name`,COUNT(v.id) as convers_num FROM t_voluum_notify v
+    LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
+    GROUP BY v.offer_id,v.country
+  </select>
+
+  <select id="selectTrafficSourceStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.traffic_source_id,v.traffic_source_name,/*d.subscription_rate as subscription_rate, */COUNT(v.id) AS convers_num FROM t_voluum_notify v
+    LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
+    /*LEFT JOIN t_distribution_rate d ON v.`offer_id` = d.voluum_offer_id AND v.traffic_source_id = d.voluum_trafficsource_id*/
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
+    GROUP BY v.`offer_id`,v.`traffic_source_id`,v.country
+  </select>
+
+  <select id="selectAdvertisersStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.`affiliate_network_id`,v.`affiliate_network_name`,v.`traffic_source_id`,v.`traffic_source_name`, COUNT(v.id) AS convers_num FROM t_voluum_notify v
+    LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
+    GROUP BY v.`offer_id`,v.affiliate_network_id,v.country
+  </select>
+
 
 </mapper>

@@ -138,33 +138,7 @@
 									<input type="text" class="form-control" id="p5" name="p5" value="${fristChannel.p5}" placeholder="参数5名称">
 								</div>
 							</div>
-							<%--<div class="form-group" id="c1Div" <c:if test="${fristChannel.callbackUrl eq null || fristChannel.callbackUrl eq ''}">style="display:none;"</c:if> >
-								<label for="name" class="col-sm-4 control-label no-padding-right">一级渠道</label>
-								<div class="col-sm-3">
-									<input type="text" class="form-control" id="c1" name="c1" value="${fristChannel.c1}" placeholder="一级渠道">
-								</div>
-							</div>
 
-							<div class="form-group" id="c2Div" <c:if test="${fristChannel.callbackUrl eq null || fristChannel.callbackUrl eq ''}">style="display:none;"</c:if>>
-								<label for="name" class="col-sm-4 control-label no-padding-right">二级渠道</label>
-								<div class="col-sm-3">
-									<input type="text" class="form-control" id="c2" name="c2" value="${fristChannel.c2}" placeholder="二级渠道">
-									<label class="error" for="c2" style="display:none;">请填写二级渠道</label>
-								</div>
-							</div>--%>
-							<div class="form-group" id="typeDiv" <c:if test="${fristChannel.callbackUrl eq null || fristChannel.callbackUrl eq ''}">style="display:none;"</c:if>>
-								<label for="name" class="col-sm-4 control-label no-padding-right">智能链接ID</label>
-								<div class="col-sm-3">
-									<input type="text" class="form-control" id="type" name="type" value="${fristChannel.type}" placeholder="智能链接ID">
-								</div>
-							</div>
-							<%--<div class="form-group" id="c3Div" <c:if test="${fristChannel.callbackUrl eq null || fristChannel.callbackUrl eq ''}">style="display:none;"</c:if>>
-								<label for="name" class="col-sm-4 control-label no-padding-right">订单号</label>
-								<div class="col-sm-3">
-									<input type="text" class="form-control" id="c3" name="c3" value="${fristChannel.c3}" placeholder="订单号">
-									<label class="error" for="c3" style="display:none;">请填写订单号</label>
-								</div>
-							</div>--%>
 							<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">负责人</label>
 								<div class="col-sm-4">
@@ -242,7 +216,7 @@
 	</div>
 
 	<script type="text/javascript">
-		$("#callbackUrl").change(function(){
+		/*$("#callbackUrl").change(function(){
 			var callbackUrl = $.trim($("#callbackUrl").val());
 			
 			if(callbackUrl != ''){
@@ -256,7 +230,7 @@
 				$("#typeDiv").hide();
 				$("#c3Div").hide();
 			}
-		});
+		});*/
 	
 	
 		$("#submitInput").click(function(){
@@ -313,8 +287,13 @@
  				num = num + 1;	
  				$("#callbackUrl").next().next().hide();
 			}else{
-				num = num + 1;
-			}
+                if(!strReg.test(callbackUrl)) {
+                    $("#callbackUrl").next().next().show();
+                }else{
+                    num = num + 1;
+                    $("#callbackUrl").next().next().hide();
+                }
+            }
 			
  			if(description.length > 150){
 				$("#description").next().show();

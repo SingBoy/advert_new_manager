@@ -108,6 +108,9 @@ public class VoluumTrafficSourceServiceImpl implements	VoluumTrafficSourceServic
 	 */
 	@Override
 	public void updateTrafficSource(FristChannel fristChannel) {
+		if(StringUtils.isEmpty(fristChannel.getVoluumTrafficSourceId())){
+			addTrafficSource(fristChannel);
+		}
 		 Map<String, Object> paramsToken = createSessionByAccount();
 		 Map<String, Object> params = new HashMap<String, Object>();
 		 params.put("name", fristChannel.getName());
@@ -183,7 +186,7 @@ public class VoluumTrafficSourceServiceImpl implements	VoluumTrafficSourceServic
 				if(i == 4)	stringBuffer.append("&p5={var5}");
 			}
 		}
-		if(listMap.size() == 0){
+		/*if(listMap.size() == 0){
 			map = new HashMap<String,Object>();
 			map.put("index", 1);
 			map.put("name", "target");
@@ -191,7 +194,7 @@ public class VoluumTrafficSourceServiceImpl implements	VoluumTrafficSourceServic
 			map.put("placeholder", "{target}");
 			map.put("trackedInReports", true);
 			listMap.add(map);
-		}
+		}*/
 		params.put("postbackUrl", ConstantConfig.ADVERT_MANAGER_URL+stringBuffer);
 		params.put("customVariables", listMap);
 	}

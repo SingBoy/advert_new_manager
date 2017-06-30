@@ -100,5 +100,12 @@ public class ConstantConfig {
 
 
 	public static final int DEFAULT_NUMBER = 100;
+
+
+	public final static Integer SUPER_MANAGER = 1;//超级管理员权限
+
+	public final static Integer ADVERTISER_MANAGER = 2;//广告主权限
+
+	public final static Integer TRAFFIC_MANAGER = 3;//渠道权限
 	
 }

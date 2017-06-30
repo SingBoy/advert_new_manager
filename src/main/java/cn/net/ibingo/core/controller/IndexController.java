@@ -7,26 +7,17 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import cn.net.ibingo.common.controller.BaseController;
 import cn.net.ibingo.common.utils.ConstantConfig;
-import cn.net.ibingo.common.utils.DateUtils;
-import cn.net.ibingo.core.model.Advertisers;
-import cn.net.ibingo.core.model.FristChannel;
 import cn.net.ibingo.core.model.Index;
-import cn.net.ibingo.core.model.NotifyAnalysis;
-import cn.net.ibingo.core.model.ResourcesMcc;
-import cn.net.ibingo.core.model.ResourcesMnc;
-import cn.net.ibingo.core.model.SubscribeSuccessAnalysis;
-import cn.net.ibingo.core.model.TwoChannel;
-import cn.net.ibingo.core.model.User;
-import cn.net.ibingo.core.query.IndexQueryBean;
+//import cn.net.ibingo.core.model.NotifyAnalysis;
+//import cn.net.ibingo.core.model.SubscribeSuccessAnalysis;
 import cn.net.ibingo.core.service.AdvertisersService;
 import cn.net.ibingo.core.service.FristChannelService;
-import cn.net.ibingo.core.service.NotifyAnalysisService;
-import cn.net.ibingo.core.service.NotifyChannelAnalysisService;
+//import cn.net.ibingo.core.service.NotifyAnalysisService;
 import cn.net.ibingo.core.service.ResourcesMccService;
 import cn.net.ibingo.core.service.ResourcesMncService;
 import cn.net.ibingo.core.service.ResourcesService;
-import cn.net.ibingo.core.service.SubscribeSuccessAnalysisService;
-import cn.net.ibingo.core.service.TwoChannelService;
+//import cn.net.ibingo.core.service.SubscribeSuccessAnalysisService;
+
 
 @Controller
 @RequestMapping("/welcome")
@@ -47,17 +38,13 @@ public class IndexController extends BaseController{
 	@Autowired
 	private FristChannelService fristChannelService;
 	
-	@Autowired
-	private TwoChannelService twoChannelService;
+
+	//@Autowired
+	//private NotifyAnalysisService notifyAnalysisService;
 	
-	@Autowired
-	private NotifyAnalysisService notifyAnalysisService;
-	
-	@Autowired
-	private NotifyChannelAnalysisService NotifyChannelAnalysisService;
-	
-	@Autowired
-	private SubscribeSuccessAnalysisService SubscribeSuccessAnalysisService;
+
+	//@Autowired
+	//private SubscribeSuccessAnalysisService SubscribeSuccessAnalysisService;
 	
 /*	@Autowired
 	private AnalysisChannelService analysisChannelService;
