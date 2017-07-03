@@ -6,9 +6,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.net.ibingo.core.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -182,6 +184,41 @@ public class ResourcesController extends BaseController{
 			System.out.println(e.getMessage());
 		}
 		return "redirect:/resources/list";
+	}
+
+	@RequestMapping(value = "/updateAliasName")
+	public void updateAliasName(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Integer id = Integer.valueOf(request.getParameter("id"));
+			String aliasName = request.getParameter("aliasName");
+			Resources resources = new Resources();
+			resources.setId(id);
+			resources.setNameAlias(aliasName);
+			if(!StringUtils.isEmpty(aliasName) && id != null	){
+				resourcesService.updateAliasName(resources);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+	}
+	@RequestMapping(value = "/updateCallbackStatus")
+	public void updateCallbackStatus(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Integer id = Integer.valueOf(request.getParameter("id"));
+			Integer callbackStatus =Integer.valueOf(request.getParameter("callbackStatus"));
+			Resources resources = new Resources();
+			resources.setId(id);
+			resources.setCallbackStatus(callbackStatus);
+			if(callbackStatus != null && id != null	){
+				resourcesService.updateCallbackStatus(resources);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
 	}
 	
 }

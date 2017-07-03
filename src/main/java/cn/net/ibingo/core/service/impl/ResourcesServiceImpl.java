@@ -176,4 +176,14 @@ public class ResourcesServiceImpl implements ResourcesService {
 	public Resources selectByOfferId(String offerId) {
 		return resourcesMapper.selectByOfferId(offerId);
 	}
+
+	@Override
+	public int updateAliasName(Resources resources) {
+		return resourcesMapper.updateAliasName(resources);
+	}
+
+	@Override
+	public int updateCallbackStatus(Resources resources) {
+		return resourcesMapper.updateCallbackStatus(resources);
+	}
 }

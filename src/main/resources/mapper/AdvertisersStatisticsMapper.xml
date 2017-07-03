@@ -18,7 +18,7 @@
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, country, offer_id, offer_name, offer_name_alias, visits_num,convers_num,convers_rate,create_date
+    id, country, offer_id, offer_name, offer_name_alias, affiliate_network_id,affiliate_network_name,visits_num,convers_num,convers_rate,date,create_date
   </sql>
   <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.AdvertisersStatisticsQueryBean" resultType="java.lang.Integer">
     select count(id) from t_advertiser_statistics
@@ -43,6 +43,7 @@
     </if>
     GROUP BY offer_id,date
   </select>
+
   <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.AdvertisersStatisticsQueryBean" resultMap="BaseResultMap">
     SELECT a.date,b.country AS country,a.offer_name,a.offer_name_alias,a.affiliate_network_name,sum(a.visits_num) as visits_num,sum(a.convers_num) as convers_num,a.convers_rate from t_advertiser_statistics a
     LEFT JOIN t_base_mcc b ON a.country = b.iso
@@ -70,24 +71,48 @@
     limit ${startIndex}, ${pageSize}
   </select>
 
+  <select id="selectOldAdvertisersStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM t_advertiser_statistics
+    WHERE 1 = 1
+    <if test="startDate != null and startDate != ''">
+      and date &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and date &lt;= #{endDate}
+    </if>
+    <if test="country != null and country != ''">
+      and country = #{country}
+    </if>
+  </select>
+
   <insert id="insertAdvertisersStatistics" parameterType="java.util.List">
     INSERT INTO t_advertiser_statistics (country,offer_id,offer_name,offer_name_alias,affiliate_network_id,affiliate_network_name,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
     VALUES
     <foreach collection="list" item="item" index="index" separator=",">
       ( #{item.country,jdbcType=VARCHAR},
-        #{item.offerId,jdbcType=VARCHAR},
-        #{item.offerName,jdbcType=VARCHAR},
-        #{item.offerNameAlias,jdbcType=VARCHAR},
-        #{item.affiliateNetworkId,jdbcType=VARCHAR},
-        #{item.affiliateNetworkName,jdbcType=VARCHAR},
-        #{item.trafficSourceId,jdbcType=VARCHAR},
-        #{item.trafficSourceName,jdbcType=VARCHAR},
-        #{item.visitsNum,jdbcType=INTEGER},
-        #{item.conversNum,jdbcType=INTEGER},
-        #{item.conversRate,jdbcType=FLOAT},
-        #{item.date,jdbcType=TIMESTAMP},
-        #{item.createDate,jdbcType=TIMESTAMP}
+      #{item.offerId,jdbcType=VARCHAR},
+      #{item.offerName,jdbcType=VARCHAR},
+      #{item.offerNameAlias,jdbcType=VARCHAR},
+      #{item.affiliateNetworkId,jdbcType=VARCHAR},
+      #{item.affiliateNetworkName,jdbcType=VARCHAR},
+      #{item.trafficSourceId,jdbcType=VARCHAR},
+      #{item.trafficSourceName,jdbcType=VARCHAR},
+      #{item.visitsNum,jdbcType=INTEGER},
+      #{item.conversNum,jdbcType=INTEGER},
+      #{item.conversRate,jdbcType=FLOAT},
+      #{item.date,jdbcType=TIMESTAMP},
+      #{item.createDate,jdbcType=TIMESTAMP}
       )
     </foreach>
   </insert>
+
+  <update id="updateAdvertisersStatistics" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" separator=";">
+      update t_advertiser_statistics
+      <set>
+        convers_num=#{item.conversNum}
+      </set>
+      where country = #{item.country} and  offer_id = #{item.offerId} and  affiliate_network_id = #{item.affiliateNetworkId} and date = #{item.date}
+    </foreach>
+  </update>
 </mapper>

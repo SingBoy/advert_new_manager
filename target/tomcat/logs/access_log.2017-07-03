@@ -1,0 +1,7 @@
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:28 +0800] "GET /advert_new_manager/fristChannel/doUpdate/119?keyword=&currentPage=1&pageSize=50 HTTP/1.1" 302 - http-bio-9090-exec-1 95
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:29 +0800] "GET /advert_new_manager/login HTTP/1.1" 200 3022 http-bio-9090-exec-4 878
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:31 +0800] "POST /advert_new_manager/login HTTP/1.1" 302 - http-bio-9090-exec-5 267
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:31 +0800] "GET /advert_new_manager/welcome/index HTTP/1.1" 200 15868 http-bio-9090-exec-6 674
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:34 +0800] "GET /advert_new_manager/fristChannel/list HTTP/1.1" 200 61710 http-bio-9090-exec-7 395
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:41 +0800] "GET /advert_new_manager/fristChannel/doUpdate/119?keyword=&currentPage=1&pageSize=50 HTTP/1.1" 200 58280 http-bio-9090-exec-8 5560
+0:0:0:0:0:0:0:1 - - [03/Jul/2017:19:06:57 +0800] "GET /advert_new_manager/resources/list HTTP/1.1" 200 95032 http-bio-9090-exec-9 429

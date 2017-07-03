@@ -42,5 +42,9 @@ public interface ResourcesMapper {
     Integer selectIdByVoluumIdBean(@Param("voluumOfferId") String voluumOfferId);
 
     Resources selectByOfferId(String offerId);
+
+    int updateAliasName(Resources resources);
+
+    int updateCallbackStatus(Resources resources);
     
 }

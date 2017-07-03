@@ -19,4 +19,8 @@ public interface DistributionRateMapper {
     Float selectByTrafficIdAndOfferId(@Param("voluumTrafficSourceId")String voluumTrafficSourceId, @Param("voluumOfferId")String voluumOfferId);
 
     List<DistributionRate> selectAll();
+
+    List<DistributionRate> selectByOfferId(String trafficId);
+
+    int insertBatchDistribution(List<DistributionRate> distributionRateList);
 }

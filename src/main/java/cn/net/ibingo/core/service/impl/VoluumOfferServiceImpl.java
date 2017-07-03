@@ -2,12 +2,15 @@ package cn.net.ibingo.core.service.impl;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import cn.net.ibingo.common.utils.*;
+import cn.net.ibingo.core.dao.*;
+import cn.net.ibingo.core.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -15,13 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.net.ibingo.core.dao.AdvertisersMapper;
-import cn.net.ibingo.core.dao.ResourcesMapper;
-import cn.net.ibingo.core.dao.ResourcesMccMapper;
-import cn.net.ibingo.core.model.Advertisers;
-import cn.net.ibingo.core.model.Mcc;
-import cn.net.ibingo.core.model.Resources;
-import cn.net.ibingo.core.model.ResourcesMcc;
 import cn.net.ibingo.core.service.MccService;
 import cn.net.ibingo.core.service.VoluumOfferService;
 import cn.net.ibingo.core.service.VoluumTrafficSourceService;
@@ -42,7 +38,12 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 	
 	@Autowired
 	private ResourcesMccMapper resourcesMccMapper;
-	
+
+	@Autowired
+	private FristChannelMapper fristChannelMapper;
+
+	@Autowired
+	private DistributionRateMapper distributionRateMapper;
 	@Autowired
 	private MccService mccService;
 	
@@ -62,7 +63,9 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 				 voluumOfferIdMap.put(resources.getVoluumOfferId(),resources);
 			 }
 		 }
-		 
+		//获取本系统中的所有广告
+		List<FristChannel> fristChannelList = fristChannelMapper.selectAll();
+
 		//国家
 		Map<String,Integer> mccCodeMap = new HashMap<String,Integer>();
 		List<Mcc> listMcc = mccService.selectAll();
@@ -89,7 +92,7 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 		 params.put("includeDeleted", false);
 		 try {
 			//根据条件查询Voluum上所有的offer数据
-			 String	 sr = httpUtil.sendHttpClientGet(ConstantConfig.VOLUUM_URL+"offer",params,paramsToken);
+			 String	sr = httpUtil.sendHttpClientGet(ConstantConfig.VOLUUM_URL+"offer",params,paramsToken);
 			//HttpRespons sr  = httpUtil.sendGet(ConstantConfig.VOLUUM_URL+"offer",params,paramsToken);
 			//if(sr != null && ConstantConfig.HTTP_CODE_200==sr.getCode()){
 			 if(!StringUtils.isEmpty(sr)) {
@@ -123,6 +126,7 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 										resources.setCreateDate(DateUtils.jsonDateToDate(jo.getString("createdTime")));
 										resources.setModifyDate(DateUtils.jsonDateToDate(jo.getString("updatedTime")));
 										resources.setVoluumOfferId(jo.getString("id"));
+										setTrafficSourceRate(jo.getString("id"),fristChannelList);
 										resourcesMapper.insertSelective(resources);
 										//根据Voluum平台的offer的id查询插入到本系统之后数据的id
 										Integer resourceId = resourcesMapper.selectIdByVoluumIdBean(jo.getString("id"));
@@ -156,7 +160,7 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 							 }
 						 }
 					 }
-						 log.info("Voluum  offer complete！--------------------");
+					log.info("Voluum  offer complete！--------------------");
 				 }
 			 }
 		 }
@@ -166,5 +170,26 @@ public class VoluumOfferServiceImpl implements VoluumOfferService {
 		}
 	}
 
+	/**
+	 * 同步广告时默认设置与渠道的分配比例为1
+	 * @param voluumOfferId
+	 * @param fristChannelList
+	 */
+	public void setTrafficSourceRate(String voluumOfferId,List<FristChannel> fristChannelList ){
+		DistributionRate distributionRate = null;
+		List<DistributionRate> distributionRateList = new ArrayList<DistributionRate>();
+		if(fristChannelList !=null && fristChannelList.size()>0 ){
+			for(FristChannel fc :fristChannelList){
+				distributionRate = new DistributionRate();
+				distributionRate.setVoluumTrafficSourceId(fc.getVoluumTrafficSourceId());
+				distributionRate.setVoluumOfferId(voluumOfferId);
+				distributionRate.setSubscriptionRate(1F);
+				distributionRateList.add(distributionRate);
+			}
+		}
+		if(distributionRateList.size()>0){
+			distributionRateMapper.insertBatchDistribution(distributionRateList);
+		}
+	}
 
 }

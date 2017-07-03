@@ -66,4 +66,16 @@
     from t_distribution_rate
   </select>
 
+
+  <insert id="insertBatchDistribution" parameterType="java.util.List">
+    INSERT INTO t_distribution_rate (voluum_trafficsource_id,voluum_offer_id,subscription_rate)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.voluumTrafficSourceId,jdbcType=VARCHAR},
+      #{item.voluumOfferId,jdbcType=VARCHAR},
+      #{item.subscriptionRate,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
 </mapper>

@@ -2,10 +2,7 @@ package cn.net.ibingo.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -176,8 +173,44 @@ public class DateUtils {
 		}
 		return null ;
 	}
+	/**
+	 * 获取更改时区后的日期
+	 * @param date 日期
+	 * @param oldZone 旧时区对象
+	 * @param newZone 新时区对象
+	 * @return 日期
+	 */
+	public static String changeTimeZone(Date date, TimeZone oldZone, TimeZone newZone) {
+		Date dateTmp = null;
+		String strTimezoneTime = "";
+		if (date != null) {
+			int timeOffset = oldZone.getRawOffset() - newZone.getRawOffset();
+			dateTmp = new Date(date.getTime() - timeOffset);
+			strTimezoneTime = formatDateTimeAll(dateTmp);
+		}
+		return strTimezoneTime;
+	}
 
+	public static String dateAddOne(String strDate){
+		Date date = null;
+		Calendar   calendar   =   new   GregorianCalendar();
+		calendar.setTime(DateUtils.parseDateTime1(strDate));
+		calendar.add(calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
+		date=calendar.getTime();   //这个时间就是日期往后推一天的结果
+		return DateUtils.formatDateTimeAll(date);
+	}
 	public static void main(String[] args) {
-		System.out.println(getHour(new Date()));
+		//System.out.println(getHour(new Date()));
+		Integer zone  = -3;
+		//计算时区
+		TimeZone oldZone = TimeZone.getTimeZone("GMT");
+		TimeZone newZone = null;
+		if (zone != null && zone > 0) {
+			newZone = TimeZone.getTimeZone("GMT-" + zone);
+		} else {
+			newZone = TimeZone.getTimeZone("GMT+" + Math.abs(zone));
+		}
+		String date = changeTimeZone(DateUtils.getYesterday(), TimeZone.getTimeZone("GMT"), newZone);
+		String dates = dateAddOne(date);
 	}
 }

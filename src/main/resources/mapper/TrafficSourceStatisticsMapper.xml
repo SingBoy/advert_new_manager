@@ -16,6 +16,10 @@
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
   </resultMap>
 
+  <sql id="Base_Column_List" >
+    id, country, offer_id, offer_name, offer_name_alias, traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date
+  </sql>
+
   <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.TrafficSourceStatisticsQueryBean" resultType="java.lang.Integer">
     select count(id) from t_trafficsource_statistics
     where 1 = 1
@@ -39,6 +43,7 @@
     </if>
     GROUP BY offer_id,date
   </select>
+
   <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.TrafficSourceStatisticsQueryBean" resultMap="BaseResultMap">
     SELECT t.date,b.country AS country,t.offer_id,t.offer_name,t.offer_name_alias,t.traffic_source_id,t.traffic_source_name,sum(t.visits_num) as visits_num,sum(t.convers_num) as convers_num,t.convers_rate  from t_trafficsource_statistics t
     LEFT JOIN t_base_mcc b ON t.country = b.iso
@@ -66,7 +71,7 @@
     limit ${startIndex}, ${pageSize}
   </select>
 
-  <select id="selectRateCountByQueryBean" parameterType="cn.net.ibingo.core.query.TrafficSourceStatisticsQueryBean" resultType="java.lang.Integer">
+  <!--<select id="selectRateCountByQueryBean" parameterType="cn.net.ibingo.core.query.TrafficSourceStatisticsQueryBean" resultType="java.lang.Integer">
     select count(id) from t_trafficsource_rate_statistics
     where 1 = 1
     <if test="startDate != null and startDate != ''">
@@ -115,29 +120,23 @@
     order by t.date desc
     limit ${startIndex}, ${pageSize}
   </select>
+-->
+  <select id="selectOldTrafficSourceStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM t_trafficsource_statistics
+    WHERE 1 = 1
+    <if test="startDate != null and startDate != ''">
+      and date &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and date &lt;= #{endDate}
+    </if>
+    <if test="country != null and country != ''">
+      and country = #{country}
+    </if>
+  </select>
 
   <insert id="insertTrafficSourceStatistics" parameterType="java.util.List">
     INSERT INTO t_trafficsource_statistics (country,offer_id,offer_name,offer_name_alias,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
-    VALUES
-    <foreach collection="list" item="item" index="index" separator=",">
-      (
-        #{item.country,jdbcType=VARCHAR},
-        #{item.offerId,jdbcType=VARCHAR},
-        #{item.offerName,jdbcType=VARCHAR},
-        #{item.offerNameAlias,jdbcType=VARCHAR},
-        #{item.trafficSourceId,jdbcType=VARCHAR},
-        #{item.trafficSourceName,jdbcType=VARCHAR},
-        #{item.visitsNum,jdbcType=INTEGER},
-        #{item.conversNum,jdbcType=INTEGER},
-        #{item.conversRate,jdbcType=FLOAT},
-        #{item.date,jdbcType=TIMESTAMP},
-        #{item.createDate,jdbcType=TIMESTAMP}
-      )
-    </foreach>
-  </insert>
-
-  <insert id="insertTrafficSourceRateStatistics" parameterType="java.util.List">
-    INSERT INTO t_trafficsource_rate_statistics (country,offer_id,offer_name,offer_name_alias,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
     VALUES
     <foreach collection="list" item="item" index="index" separator=",">
       (
@@ -155,4 +154,33 @@
       )
     </foreach>
   </insert>
+
+  <!--<insert id="insertTrafficSourceRateStatistics" parameterType="java.util.List">
+    INSERT INTO t_trafficsource_rate_statistics (country,offer_id,offer_name,offer_name_alias,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.country,jdbcType=VARCHAR},
+      #{item.offerId,jdbcType=VARCHAR},
+      #{item.offerName,jdbcType=VARCHAR},
+      #{item.offerNameAlias,jdbcType=VARCHAR},
+      #{item.trafficSourceId,jdbcType=VARCHAR},
+      #{item.trafficSourceName,jdbcType=VARCHAR},
+      #{item.visitsNum,jdbcType=INTEGER},
+      #{item.conversNum,jdbcType=INTEGER},
+      #{item.conversRate,jdbcType=FLOAT},
+      #{item.date,jdbcType=TIMESTAMP},
+      #{item.createDate,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>-->
+  <update id="updateTrafficSourceStatistics" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" separator=";">
+      update t_trafficsource_statistics
+      <set>
+        convers_num=#{item.conversNum}
+      </set>
+      where country = #{item.country} and  offer_id = #{item.offerId} and  traffic_source_id = #{item.trafficSourceId} and date = #{item.date}
+    </foreach>
+  </update>
 </mapper>

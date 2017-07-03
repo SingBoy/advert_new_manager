@@ -65,18 +65,19 @@
 							<table class="table table-hover table-bordered table-striped table-condensed flip-content">
 								<thead class="flip-content bordered-palegreen">
 									<tr>
-										<th class="text-center" style="width:250px;">渠道名称</th>
-										<th class="text-center" style="width:100px;">分成比例</th>
-										<th class="text-center" style="width:190px;">描述</th>
-										<th class="text-center" style="width:100px;">负责人</th>
-										<th class="text-center" style="width:180px;">更新时间</th>
-										<th></th>
+										<th class="text-center" style="width:25%">渠道名称</th>
+										<th class="text-center" style="width:8%">负责人</th>
+										<th class="text-center" style="width:10%">分成比例</th>
+										<th class="text-center" style="width:30%">描述</th>
+										<th class="text-center" style="width:12%">更新时间</th>
+										<th style="width:15%"></th>
 									</tr>
 								</thead>
 								<tbody>
 									<c:forEach items="${pageDataList.pageRecords}" var="item">
 										<tr>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
+											<td class="text-center" style="word-break:break-all;">${item.leader }</td>
 											<td class="text-center" style="word-break:break-all;">${item.dividedRate }</td>
 											<c:choose>
 												<c:when test="${fn:length(item.description) ne 0}">
@@ -86,7 +87,7 @@
 													<td class="text-center">-</td>
 												</c:otherwise>
 											</c:choose>
-											<td class="text-center" style="word-break:break-all;">${item.leader }</td>
+
 											<%--<td class="text-center" style="word-break:break-all;">
 												<a href="${pageContext.request.contextPath}/fristPromotion/list?pid=${item.id}" style="color:#72ACE3;text-decoration:underline;">查看</a>
 											</td>--%>

@@ -148,7 +148,7 @@
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="nameAlias != null" >
-        nameAlias,
+        #{nameAlias,jdbcType=VARCHAR},
       </if>
       <if test="adsId != null" >
         #{adsId,jdbcType=INTEGER},
@@ -400,6 +400,7 @@
     <if test="adsId != null">
 		and ads_id = #{adsId,jdbcType=INTEGER}
 	</if>
+    order BY name
   </select>
   
   <delete id="deleteByMccId" parameterType="java.lang.Integer" >
@@ -436,5 +437,17 @@
     from t_config_resources a
     where voluum_offer_id =  #{voluumOfferId,jdbcType=VARCHAR}
   </select>
+
+    <update id="updateAliasName" parameterType="cn.net.ibingo.core.model.Resources">
+       update t_config_resources
+       set name_alias =  #{nameAlias,jdbcType=VARCHAR}
+       where id =  #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateCallbackStatus" parameterType="cn.net.ibingo.core.model.Resources">
+       update t_config_resources
+       set callback_status = #{callbackStatus,jdbcType=INTEGER}
+       where id =  #{id,jdbcType=INTEGER}
+    </update>
   
 </mapper>

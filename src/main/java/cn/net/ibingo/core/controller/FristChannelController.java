@@ -145,5 +145,8 @@ public class FristChannelController extends BaseController{
 		return listFristChannel;
 	}
 
+	public void setRate(){
+
+	}
 
 }

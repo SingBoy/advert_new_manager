@@ -27,4 +27,8 @@ public interface ResourcesService {
 	public List<Resources> selectAll(Integer adsId);
 
 	public Resources selectByOfferId(String offerId);
+
+	public int updateAliasName(Resources resources);
+
+	public int updateCallbackStatus(Resources resources);
 }

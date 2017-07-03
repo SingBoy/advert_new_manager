@@ -129,7 +129,10 @@
 											<%--<td class="text-center" style="word-break:break-all;">${item.id }</td>--%>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
 											<td class="text-center" style="word-break:break-all;">${item.adsName }</td>
-											<td class="text-center" style="word-break:break-all;">${item.nameAlias }</td>
+											<td class="text-center" style="word-break:break-all;">
+													<%--${item.nameAlias }--%>
+												<input style="width: 100%" id="${item.id}_aliasName" name="" value="${item.nameAlias }" onblur="updateAliasName(${item.id})"/>
+											</td>
 											<td class="text-center" style="word-break:break-all;">
 												<label data-toggle="tooltip" data-placement="bottom" data-original-title="${item.mccGroup }">
 													<c:if test="${fn:length(item.mccGroup) > 10}">	
@@ -166,15 +169,19 @@
 												</c:otherwise>
 											</c:choose>
 											<td class="text-center" style="word-break:break-all;">
-												<c:if test="${item.callbackStatus== 1}">
+												<%--<c:if test="${item.callbackStatus== 1}">
 													 <font color="green">是</font>
 												</c:if>
 												<c:if test="${item.callbackStatus== 0}">
 													<font color="red">否</font>
-												</c:if>
+												</c:if>--%>
+													<select id="${item.id}_callbackStatus" name="callbackStatus" style="width:100%" class="multiselect1" onblur="updateCallStatus(${item.id})">
+														<option value="1" <c:if test="${item.callbackStatus== 1}">selected="selected"</c:if>>是</option>
+														<option value="0" <c:if test="${item.callbackStatus== 0}">selected="selected"</c:if>>否</option>
+													</select>
 											</td>
 											<td class="text-center">
-												<a href="${pageContext.request.contextPath}/resources/doUpdate/${item.id}?keyword=${queryBean.keyword}&country=${queryBean.country}&operator=${queryBean.operator}&adsId=${queryBean.adsId}&status=${queryBean.status}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a> 
+												<%--<a href="${pageContext.request.contextPath}/resources/doUpdate/${item.id}?keyword=${queryBean.keyword}&country=${queryBean.country}&operator=${queryBean.operator}&adsId=${queryBean.adsId}&status=${queryBean.status}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a>--%>
 												<a onclick="confirmImg(${item.id})" class="btn btn-darkorange btn-xs shiny"><i class="fa fa-trash-o"></i> 删除</a>
 											</td>
 										</tr>
@@ -245,6 +252,34 @@
 		        className: "",
 		    });
 		}
+		function updateAliasName(id) {
+		    var aliasName = $("#"+id+"_aliasName").val();
+			if(aliasName !=null && aliasName !=""){
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/resources/updateAliasName",
+                    type :"GET",
+                    data:{id:id,aliasName:aliasName},
+                    dataType : "json",
+                    success: function(resources){
+
+                    }
+                });
+			}
+        }
+        function updateCallStatus(id) {
+            var callStatus = $("#"+id+"_callbackStatus").val();
+            if(callStatus !=null && callStatus !=""){
+                $.ajax({
+                    url: "${pageContext.request.contextPath}/resources/updateCallbackStatus",
+                    type :"GET",
+                    data:{id:id,callbackStatus:callStatus},
+                    dataType : "json",
+                    success: function(resources){
+
+                    }
+                });
+            }
+        }
 		
 	</script>
 </body>

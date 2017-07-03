@@ -114,7 +114,7 @@ public class TrafficSourceStatisticsController extends BaseController {
     public void countConversNum(Map<String,Float> rateMap, PaginationList<TrafficSourceStatistics> pageDataList ){
         if(rateMap != null && pageDataList != null && pageDataList.getTotalSize()>0){
             //获取查询出来的数据list
-            List<TrafficSourceStatistics> pageDatas  = pageDataList.getPageRecords();
+                List<TrafficSourceStatistics> pageDatas  = pageDataList.getPageRecords();
             //遍历数据将订阅量与对应的订阅量分配比例相乘，得到结果
             Float rate = null;
             for(TrafficSourceStatistics tss : pageDatas){

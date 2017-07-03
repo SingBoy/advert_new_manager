@@ -198,26 +198,24 @@
 
 
   <select id="selectOfferStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT v.country,v.offer_id,v.offer_name,r.name_alias as offer_name_alias,v.`traffic_source_id`,v.`traffic_source_name`,COUNT(v.id) as convers_num FROM t_voluum_notify v
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias as offer_name_alias,COUNT(v.id) as convers_num FROM t_voluum_notify v
     LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
-    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
-    GROUP BY v.offer_id,v.country
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR} AND v.country = #{country,jdbcType=VARCHAR}
+    GROUP BY v.offer_id
   </select>
 
   <select id="selectTrafficSourceStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.traffic_source_id,v.traffic_source_name,/*d.subscription_rate as subscription_rate, */COUNT(v.id) AS convers_num FROM t_voluum_notify v
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.traffic_source_id,v.traffic_source_name,COUNT(v.id) AS convers_num FROM t_voluum_notify v
     LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
-    /*LEFT JOIN t_distribution_rate d ON v.`offer_id` = d.voluum_offer_id AND v.traffic_source_id = d.voluum_trafficsource_id*/
-    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
-    GROUP BY v.`offer_id`,v.`traffic_source_id`,v.country
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR} AND v.country = #{country,jdbcType=VARCHAR}
+    GROUP BY v.`offer_id`,v.traffic_source_id
   </select>
 
   <select id="selectAdvertisersStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.`affiliate_network_id`,v.`affiliate_network_name`,v.`traffic_source_id`,v.`traffic_source_name`, COUNT(v.id) AS convers_num FROM t_voluum_notify v
+    SELECT v.country,v.offer_id,v.offer_name,r.name_alias AS offer_name_alias,v.`affiliate_network_id`,v.`affiliate_network_name`, COUNT(v.id) AS convers_num FROM t_voluum_notify v
     LEFT JOIN t_config_resources r ON v.offer_id = r.voluum_offer_id
-    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR}
-    GROUP BY v.`offer_id`,v.affiliate_network_id,v.country
+    WHERE v.create_date BETWEEN #{startDate,jdbcType=VARCHAR} AND #{endDate,jdbcType=VARCHAR} AND v.country = #{country,jdbcType=VARCHAR}
+    GROUP BY v.`offer_id`,v.affiliate_network_id
   </select>
-
 
 </mapper>

@@ -16,7 +16,7 @@
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, country, offer_id, offer_name, offer_name_alias, visits_num,convers_num,convers_rate,create_date
+    id, country, offer_id, offer_name, offer_name_alias, traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date
   </sql>
 
 
@@ -70,22 +70,46 @@
     limit ${startIndex}, ${pageSize}
   </select>
 
+
+  <select id="selectOldOfferStatistics" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> FROM t_offer_statistics
+    WHERE 1 = 1
+    <if test="startDate != null and startDate != ''">
+      and date &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and date &lt;= #{endDate}
+    </if>
+    <if test="country != null and country != ''">
+      and country = #{country}
+    </if>
+  </select>
+
   <insert id="insertOfferStatistics" parameterType="java.util.List">
-    INSERT INTO t_offer_statistics (country,offer_id,offer_name,offer_name_alias,traffic_source_id,traffic_source_name,visits_num,convers_num,convers_rate,date,create_date)
+    INSERT INTO t_offer_statistics (country,offer_id,offer_name,offer_name_alias,visits_num,convers_num,convers_rate,date,create_date)
     VALUES
     <foreach collection="list" item="item" index="index" separator=",">
       ( #{item.country,jdbcType=VARCHAR},
-        #{item.offerId,jdbcType=VARCHAR},
-        #{item.offerName,jdbcType=VARCHAR},
-        #{item.offerNameAlias,jdbcType=VARCHAR},
-        #{item.trafficSourceId,jdbcType=VARCHAR},
-        #{item.trafficSourceName,jdbcType=VARCHAR},
-        #{item.visitsNum,jdbcType=INTEGER},
-        #{item.conversNum,jdbcType=INTEGER},
-        #{item.conversRate,jdbcType=FLOAT},
-        #{item.date,jdbcType=TIMESTAMP},
-        #{item.createDate,jdbcType=TIMESTAMP}
+      #{item.offerId,jdbcType=VARCHAR},
+      #{item.offerName,jdbcType=VARCHAR},
+      #{item.offerNameAlias,jdbcType=VARCHAR},
+      #{item.visitsNum,jdbcType=INTEGER},
+      #{item.conversNum,jdbcType=INTEGER},
+      #{item.conversRate,jdbcType=FLOAT},
+      #{item.date,jdbcType=TIMESTAMP},
+      #{item.createDate,jdbcType=TIMESTAMP}
       )
     </foreach>
   </insert>
+
+  <update id="updateOfferStatistics" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" separator=";">
+      UPDATE t_offer_statistics
+      <set>
+        convers_num=#{item.conversNum}
+      </set>
+      WHERE country = #{item.country} AND   offer_id = #{item.offerId} AND date = #{item.date}
+    </foreach>
+  </update>
+
 </mapper>

@@ -58,7 +58,6 @@
 									</button>
 									<%--<a type="button" class="btn btn-primary" href="${pageContext.request.contextPath}/advertisers/doSave?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}"><i class="fa fa-plus"></i> 新增</a>--%>
 									<a type="button" class="btn btn-info" href="${pageContext.request.contextPath}/advertisers/syncVoluumAffil"><i class="fa fa-asterisk"></i> 同步</a>
-									<a type="button" class="btn btn-info" href="${pageContext.request.contextPath}/advertisers/uploadFile"><i class="fa fa-asterisk"></i> 文件上传</a>
 								</div>
 							</div>
 						</form>
