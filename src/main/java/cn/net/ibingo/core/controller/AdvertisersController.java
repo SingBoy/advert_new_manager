@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.net.ibingo.common.utils.HttpRespons;
@@ -107,8 +108,9 @@ public class AdvertisersController extends BaseController{
 	}
 
 	@RequestMapping(value = "/voluumRequest")
-	public void voluumRequest(VoluumNotify notify)  throws UnsupportedEncodingException {
+	public void voluumRequest(VoluumNotify notify,HttpServletRequest request)  throws UnsupportedEncodingException {
 		try {
+			String username = request.getParameter("offerName");
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("cid",notify.getClickId());
 			HttpUtil httpUtil = new HttpUtil();
@@ -120,5 +122,7 @@ public class AdvertisersController extends BaseController{
 			System.out.println(e.getMessage());
 		}
 	}
+
+
 
 }

@@ -27,7 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 public class test {
 	private static Logger log = Logger.getLogger(String.valueOf(test.class));
 	private static String token = "";
-	
+	private static HttpUtil httpUtil = new HttpUtil();
+
 	public static void main(String[] main){
 		//getAccount();
 		//createSessionByAccount();
@@ -35,12 +36,19 @@ public class test {
 		//addTrafficSource();
 		//updateTrafficSource();
 		//deleteTracfficSource();
+		//downloadFile1("D://test","abc");
 		try {
 			//uploadFile();
-			downloadFile("","","");
+			// downloadFile();
+			//HttpRespons respons= httpUtil.sendPost("http://www.mmmmmmanyu.com/osp/rego_callback.action",null,null);
+			//http://www.mmmmmmanyu.com/osp/rego_callback.action?postback=2017070710155637506_232351_23_IQ_asiacell_D860_9023
+
+			//System.out.println(respons.getCode());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		requestVoluum(0,"");
+
 	}
 	public static void uploadFile() throws UnsupportedEncodingException {
 
@@ -64,24 +72,17 @@ public class test {
 				e.printStackTrace();
 			}
 	}
-	public static void downloadFile(String link,String p,String name) {
 
+	public static void downloadFile(String s, String abc) {
 		String urlStr="http://u.nicegame.me/api/downloadImage";//http://yxj.ngrok.cc/downloadImage";
-		String path= p;
-		String fileName=name;
 		FileOutputStream output = null;
 		InputStream input = null;
 		HttpURLConnection conn = null;
 		System.out.println("downloadFile1 = ");
 		try {
-            /*
-             * 通过URL取得HttpURLConnection
-             * 要网络连接成功，需在AndroidMainfest.xml中进行权限配置
-             * <uses-permission android:name="android.permission.INTERNET" />
-             */
+
 			URL url=new URL(urlStr);
 			conn=(HttpURLConnection)url.openConnection();
-			// conn.setRequestProperty("Connection", "Keep-Alive");
 			conn.setRequestMethod("POST");
 			conn.setUseCaches(false);
 			conn.setDoOutput(true);
@@ -89,7 +90,7 @@ public class test {
 
 			StringBuffer param = new StringBuffer();
 			param.append("&");
-			param.append("fileName").append("=").append("ph");
+			param.append("fileName").append("=").append("abc");
 
 			conn.getOutputStream().write(param.toString().getBytes());
 			conn.getOutputStream().flush();
@@ -97,13 +98,7 @@ public class test {
 
 			input = conn.getInputStream();
 
-
-			//String SDCard=Environment.getExternalStorageDirectory()+"";
-			//String pathName=SDCard+"/"+path+"/"+fileName;//文件存储路径
-
 			File file=new File("");
-
-
 
 			System.out.println("downloadFile1 = ");
 			if(file.exists()){
@@ -119,7 +114,6 @@ public class test {
 				try {
 					output=new FileOutputStream(file);
 				} catch(FileNotFoundException e) {
-
 				}
 
 				byte[] bs = new byte[1024];
@@ -127,13 +121,7 @@ public class test {
 				while((len = input.read(bs))!=-1){
 					output.write(bs,0,len);
 				}
-
-				// output.write(Buffer,0,1);
 				output.flush();
-
-
-				//handler.sendEmptyMessage(0);
-
 			}
 
 			output.close();
@@ -205,13 +193,13 @@ public class test {
 
 
 
-	public  void requestVoluum(int i,String src){
+	public static void requestVoluum(int i,String src){
 		log.info("第"+i+"条线程请求开始"+new Date());
 		HttpUtil httpUtil = new HttpUtil();
 		Map<String, Object> paramsToken = new HashMap<String, Object>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		try {
-			String url = "http://t.nicegame.me/"+src;
+			String url = "http://t.nicegame.me/9c419064-b80e-4ab1-a88d-b5476ffeda83?postback={postback}";//"http://t.nicegame.me/"+src;
 			System.out.println("访问地址:" + url);
 			URL serverUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) serverUrl
@@ -392,8 +380,76 @@ public class test {
 				e.printStackTrace();
 			}
 	}
-	
 
+	public static File downloadFile1(String p,String name) {
+		String urlStr="http://yxj.ngrok.cc/user_manager/account/downloadImage";
+		String path= p;
+		String fileName=name;
+		FileOutputStream output = null;
+		InputStream input = null;
+		HttpURLConnection conn = null;
+		System.out.println("downloadFile = " + Thread.currentThread().getName());
+		try {
+			URL url=new URL(urlStr);
+			conn=(HttpURLConnection)url.openConnection();
+			// conn.setRequestProperty("Connection", "Keep-Alive");
+			conn.setRequestMethod("POST");
+			conn.setUseCaches(false);
+			conn.setDoOutput(true);
+			conn.setDoInput(true);
+			StringBuffer param = new StringBuffer();
+			param.append("&");
+			param.append("userName").append("=").append(name);
+			conn.getOutputStream().write(param.toString().getBytes());
+			conn.getOutputStream().flush();
+			conn.getOutputStream().close();
+			input = conn.getInputStream();
+			String pathName= path+"/"+fileName;
+			int res = conn.getResponseCode();
+			String status = conn.getHeaderField("status");
+
+			File file=new File(pathName);
+			file.delete();
+			System.out.println("downloadFile1 = " + file.getAbsolutePath());
+			if(file.exists()){
+				System.out.println("exits");
+				return file;
+			}else{
+				int len;
+				File png = new File(path);
+				png.mkdir();
+				file.createNewFile();
+				try {
+					output=new FileOutputStream(file);
+				} catch(FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				byte[] bytes = new byte[1024];
+				while((len = input.read(bytes))!=-1){
+					output.write(bytes,0,len);
+				}
+				output.flush();
+			}
+			output.close();
+			input.close();
+			conn.disconnect();
+			return file;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(output != null) {
+					output.close();
+				}
+				if(input != null) {
+					output.close();
+				}
+			} catch (Exception e1) {
+
+			}
+		}
+		return null;
+	}
 	
 	
 	

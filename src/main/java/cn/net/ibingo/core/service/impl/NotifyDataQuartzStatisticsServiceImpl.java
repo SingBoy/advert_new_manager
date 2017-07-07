@@ -9,13 +9,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * 定时统计回调数据
  */
 @Service
 public class NotifyDataQuartzStatisticsServiceImpl {
-
+    private static Logger log = Logger.getLogger(String.valueOf(NotifyDataQuartzStatisticsServiceImpl.class));
     @Autowired
     private TimezoneCountryMapper timezoneCountryMapper;
 
@@ -32,14 +33,7 @@ public class NotifyDataQuartzStatisticsServiceImpl {
     private VoluumNotifyMapper voluumNotifyMapper;
 
 
-    public List<TimezoneCountry> queryCoutryList() {
-        List<TimezoneCountry> countryList = timezoneCountryMapper.queryCoutryList();
-        return countryList;
-    }
-
-
-    //@Scheduled(cron = "0/15 * * * * *")
-    @Scheduled(cron = "20 51 18 * * ?")
+    @Scheduled(cron = "0 0 4/4 * * ?")
     public void quartzAnalysis() {
         List<TimezoneCountry> countryTimezoneList = timezoneCountryMapper.queryCoutryList();
         if (countryTimezoneList != null && countryTimezoneList.size() > 0) {
@@ -64,6 +58,7 @@ public class NotifyDataQuartzStatisticsServiceImpl {
                 accordTrafficSourceStatistics(yesDay,startDate, endDate, tc.getCountryIso());
                 accordAdvertisersStatistics(yesDay,startDate, endDate, tc.getCountryIso());
             }
+            log.info("---------------statistics compalete-----------------"+DateUtils.formatDateTimeAll(new Date()));
         }
     }
 
@@ -148,8 +143,6 @@ public class NotifyDataQuartzStatisticsServiceImpl {
         List<TrafficSourceStatistics> updateTrafficList = new ArrayList<TrafficSourceStatistics>();
         Map<String, TrafficSourceStatistics> oldTrafficSourceStatisticsMap = new HashMap<String, TrafficSourceStatistics>();
         TrafficSourceStatistics traffic = null;
-        TrafficSourceStatistics trafficRate = null;
-        Float rate = null;
         if (voluumList != null && voluumList.size() > 0) {
             //根据时间、国家查询当天已存在的广告统计数据
             List<TrafficSourceStatistics> oldTrafficStatisticsList = trafficSourceStatisticsMapper.selectOldTrafficSourceStatistics(startDate, endDate, country);

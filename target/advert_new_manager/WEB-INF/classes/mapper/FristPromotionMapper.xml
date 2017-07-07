@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.FristPromotionMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.FristPromotion" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pid" property="pid" jdbcType="INTEGER" />
+    <result column="link_id" property="linkId" jdbcType="VARCHAR" />
+    <result column="promotion_url" property="promotionUrl" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pid, link_id, promotion_url, create_date, modify_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_config_frist_promotion
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_config_frist_promotion
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.net.ibingo.core.model.FristPromotion" >
+    insert into t_config_frist_promotion (id, pid, link_id, 
+      promotion_url, create_date, modify_date
+      )
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{linkId,jdbcType=VARCHAR}, 
+      #{promotionUrl,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{modifyDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.net.ibingo.core.model.FristPromotion" >
+    insert into t_config_frist_promotion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pid != null" >
+        pid,
+      </if>
+      <if test="linkId != null" >
+        link_id,
+      </if>
+      <if test="promotionUrl != null" >
+        promotion_url,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="modifyDate != null" >
+        modify_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null" >
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="linkId != null" >
+        #{linkId,jdbcType=VARCHAR},
+      </if>
+      <if test="promotionUrl != null" >
+        #{promotionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.net.ibingo.core.model.FristPromotion" >
+    update t_config_frist_promotion
+    <set >
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="linkId != null" >
+        link_id = #{linkId,jdbcType=VARCHAR},
+      </if>
+      <if test="promotionUrl != null" >
+        promotion_url = #{promotionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.net.ibingo.core.model.FristPromotion" >
+    update t_config_frist_promotion
+    set pid = #{pid,jdbcType=INTEGER},
+      link_id = #{linkId,jdbcType=VARCHAR},
+      promotion_url = #{promotionUrl,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.FristPromotionQueryBean" resultType="java.lang.Integer">
+	select count(id) from t_config_frist_promotion  
+	where pid = #{pid}
+  </select>
+	
+  <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.FristPromotionQueryBean" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from t_config_frist_promotion 
+	where pid = #{pid}
+	order by create_date desc 
+	limit ${startIndex}, ${pageSize}
+  </select>
+  
+  <select id="selectMaxCode" resultType="java.lang.String" >
+    select max(link_id) from t_config_frist_promotion
+  </select>
+  
+  <delete id="deleteByPid" parameterType="java.lang.Integer" >
+    delete from t_config_frist_promotion
+    where pid = #{pid}
+  </delete>
+  
+</mapper>

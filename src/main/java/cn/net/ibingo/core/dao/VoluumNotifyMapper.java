@@ -17,7 +17,7 @@ public interface VoluumNotifyMapper {
 
     int selectCountByQueryBean(VoluumNotifyQueryBean queryBean);
 
-    int updateDateType(String clickId);
+    int updateDataType(String clickId);
 
     int delete(int id);
 

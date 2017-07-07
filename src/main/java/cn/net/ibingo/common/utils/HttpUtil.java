@@ -1,15 +1,5 @@
 package cn.net.ibingo.common.utils;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-
-import cn.net.ibingo.core.service.impl.VoluumAffiliateNetworkServiceImpl;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,7 +9,19 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  *  http工具类
@@ -44,8 +46,8 @@ public class HttpUtil {
      * @return 响应对象
      * @throws IOException
      */
-    public HttpRespons sendGet(String urlString) throws IOException {
-        return this.sendG(urlString,null, null);
+    public static HttpRespons sendGet(String urlString) throws IOException {
+        return sendG(urlString,null, null);
     }
 
     /**
@@ -221,7 +223,7 @@ public class HttpUtil {
      *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return URL 所代表远程资源的响应结果
      */
-    public HttpRespons sendG(String url, Map<String,Object> parameters,Map<String, Object> propertys)throws IOException {
+    public static HttpRespons sendG(String url, Map<String,Object> parameters,Map<String, Object> propertys)throws IOException {
         String result = "";
         BufferedReader in = null;
         try {
@@ -309,7 +311,7 @@ public class HttpUtil {
      * @return 响应对象   
      * @throws IOException   
      */    
-    private HttpRespons makeContent(String urlString,
+    private static HttpRespons makeContent(String urlString,
             HttpURLConnection urlConnection) throws IOException {     
         HttpRespons httpResponser = new HttpRespons();     
         try {

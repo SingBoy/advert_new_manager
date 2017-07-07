@@ -201,7 +201,7 @@ public class DateUtils {
 	}
 	public static void main(String[] args) {
 		//System.out.println(getHour(new Date()));
-		Integer zone  = -3;
+		Integer zone  = 400;
 		//计算时区
 		TimeZone oldZone = TimeZone.getTimeZone("GMT");
 		TimeZone newZone = null;

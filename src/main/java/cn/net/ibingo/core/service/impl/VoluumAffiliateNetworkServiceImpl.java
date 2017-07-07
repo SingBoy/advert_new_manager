@@ -57,7 +57,7 @@ public class VoluumAffiliateNetworkServiceImpl implements VoluumAffiliateNetwork
 			 //HttpRespons sr  = httpUtil.sendGet(ConstantConfig.VOLUUM_URL+"affiliate-network",params,paramsToken);
 			 //if(sr != null && ConstantConfig.HTTP_CODE_200==sr.getCode()){
 			//	JSONObject jsStr = JSONObject.fromObject(sr.getContent());
-			 String	 sr = httpUtil.sendHttpClientGet(ConstantConfig.VOLUUM_URL+"affiliate-network",params,paramsToken);
+			 String	sr = httpUtil.sendHttpClientGet(ConstantConfig.VOLUUM_URL+"affiliate-network",params,paramsToken);
 			 if(!StringUtils.isEmpty(sr)) {
 				JSONObject jsStr = JSONObject.fromObject(sr);
 				if (jsStr != null) {

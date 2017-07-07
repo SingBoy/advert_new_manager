@@ -14,7 +14,7 @@ public interface VoluumNotifyService {
 
 	public PaginationList<VoluumNotify> list(VoluumNotifyQueryBean vb);
 
-	public int updateDateType(String clickId);
+	public int updateDataType(String clickId);
 
 	public int delete(int id);
 }

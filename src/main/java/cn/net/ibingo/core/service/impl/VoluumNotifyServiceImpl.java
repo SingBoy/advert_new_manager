@@ -40,8 +40,8 @@ public class VoluumNotifyServiceImpl implements VoluumNotifyService {
 	}
 
 	@Override
-	public int updateDateType(String clickId) {
-		return voluumNotifyMapper.updateDateType(clickId);
+	public int updateDataType(String clickId) {
+		return voluumNotifyMapper.updateDataType(clickId);
 	}
 
 	@Override
