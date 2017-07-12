@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.net.ibingo.core.dao.IpAreaMapper" >
+  <resultMap id="BaseResultMap" type="cn.net.ibingo.core.model.IpArea" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="start" property="start" jdbcType="VARCHAR" />
+    <result column="end" property="end" jdbcType="VARCHAR" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="iso" property="iso" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, start, end, country, operator, iso, create_date, modify_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_ip_area
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_ip_area
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.net.ibingo.core.model.IpArea" >
+    insert into t_base_ip_area (id, start, end, 
+      country, operator, iso, create_date, 
+      modify_date)
+    values (#{id,jdbcType=INTEGER}, #{start,jdbcType=VARCHAR}, #{end,jdbcType=VARCHAR}, 
+      #{country,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, #{iso,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{modifyDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.net.ibingo.core.model.IpArea" >
+    insert into t_base_ip_area
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="start != null" >
+        start,
+      </if>
+      <if test="end != null" >
+        end,
+      </if>
+      <if test="country != null" >
+        country,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="iso != null" >
+        iso,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="modifyDate != null" >
+        modify_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="start != null" >
+        #{start,jdbcType=VARCHAR},
+      </if>
+      <if test="end != null" >
+        #{end,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null" >
+        #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="iso != null" >
+        #{iso,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.net.ibingo.core.model.IpArea" >
+    update t_base_ip_area
+    <set >
+      <if test="start != null" >
+        start = #{start,jdbcType=VARCHAR},
+      </if>
+      <if test="end != null" >
+        end = #{end,jdbcType=VARCHAR},
+      </if>
+      <if test="country != null" >
+        country = #{country,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="iso != null" >
+        iso = #{iso,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.net.ibingo.core.model.IpArea" >
+    update t_base_ip_area
+    set start = #{start,jdbcType=VARCHAR},
+      end = #{end,jdbcType=VARCHAR},
+      country = #{country,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      iso = #{iso,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectCountByQueryBean" parameterType="cn.net.ibingo.core.query.IpAreaQueryBean" resultType="java.lang.Integer">
+	select count(id) from t_base_ip_area    
+	where 1 = 1   
+	<if test="country != null and country != ''">
+		and country like '%${country}%' 
+	</if>
+	<if test="operator != null and operator != ''">
+		and operator like '%${operator}%' 
+	</if>
+  </select>
+	
+  <select id="selectByQueryBean" parameterType="cn.net.ibingo.core.query.IpAreaQueryBean" resultMap="BaseResultMap">
+	 select <include refid="Base_Column_List" /> from t_base_ip_area    
+	 where 1 = 1 
+	<if test="country != null and country != ''">
+		and country like '%${country}%' 
+	</if>
+	<if test="operator != null and operator != ''">
+		and operator like '%${operator}%' 
+	</if>
+	order by CONVERT(country using gbk) COLLATE gbk_chinese_ci asc
+	limit ${startIndex}, ${pageSize}
+  </select>
+  
+  <select id="selectByIpArea" resultMap="BaseResultMap" parameterType="cn.net.ibingo.core.model.IpArea" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_ip_area
+    where 1 = 1 
+    <if test="country != null and country != ''">
+		and country = #{country} 
+	</if>
+	<if test="operator != null and operator != ''">
+		and operator = #{operator} 
+	</if>
+	<if test="start != null and start != ''">
+		and start = #{start} 
+	</if>
+	<if test="end != null and end != ''">
+		and end = #{end} 
+	</if>
+  </select>
+  
+  <update id="updateByCountry" parameterType="cn.net.ibingo.core.model.IpArea" >
+    update t_base_ip_area
+    set country = #{newCountry},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP}
+    where country = #{country}
+  </update>
+  
+  <update id="updateByOperator" parameterType="cn.net.ibingo.core.model.IpArea" >
+    update t_base_ip_area
+    set operator = #{newOperator},
+      modify_date = #{modifyDate,jdbcType=TIMESTAMP}
+    where country = #{country} and operator = #{operator}
+  </update>
+  
+</mapper>

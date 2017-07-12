@@ -3,13 +3,11 @@ package advert_manager;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
-import cn.net.ibingo.common.utils.ConstantConfig;
-import cn.net.ibingo.common.utils.HttpRequester;
-import cn.net.ibingo.common.utils.HttpRespons;
-import cn.net.ibingo.common.utils.HttpUtil;
+import cn.net.ibingo.common.utils.*;
 
 import cn.net.ibingo.core.controller.VoluumNotifyController;
 import com.alibaba.fastjson.JSONObject;
@@ -40,15 +38,40 @@ public class test {
 		try {
 			//uploadFile();
 			// downloadFile();
-			//HttpRespons respons= httpUtil.sendPost("http://www.mmmmmmanyu.com/osp/rego_callback.action",null,null);
+			HttpRespons respons= httpUtil.sendPost("http://webeyemob.go2cloud.org/aff_lsr?transaction_id=102a34c6500d2f96cce7292557b58d",null,null);
 			//http://www.mmmmmmanyu.com/osp/rego_callback.action?postback=2017070710155637506_232351_23_IQ_asiacell_D860_9023
 
 			//System.out.println(respons.getCode());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		requestVoluum(0,"");
+		//requestVoluum(0,"");
+		for(int i = 0;i<10;i++){
+			testThread(i);
+			System.out.println(i);
+		}
 
+	}
+
+	public static	 void  testThread(final int i){
+		//Runnable task = () ->System.out.println("---------");//sendStatusByMessage(notify,fristChannel,callStateTemp,rate,dailyLimitTemp);
+		try {
+			Runnable rn = new Runnable() {
+				@Override
+				public void run() {
+					System.out.println(i+"------------"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println(i+"------------------------------------------"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
+				}
+			};
+			ThreadPoolUtil.execute(rn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	public static void uploadFile() throws UnsupportedEncodingException {
 

@@ -25,6 +25,8 @@ public class VoluumNotify {
 
     private Float payout;//价格
 
+    private Float campaignCpa;//
+
     private String p1;//参数1
 
     private String p2;//参数2
@@ -211,5 +213,13 @@ public class VoluumNotify {
 
     public void setSubscriptionRate(Float subscriptionRate) {
         this.subscriptionRate = subscriptionRate;
+    }
+
+    public Float getCampaignCpa() {
+        return campaignCpa;
+    }
+
+    public void setCampaignCpa(Float campaignCpa) {
+        this.campaignCpa = campaignCpa;
     }
 }

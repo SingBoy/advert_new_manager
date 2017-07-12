@@ -14,6 +14,7 @@ import cn.net.ibingo.common.utils.Test;
 import cn.net.ibingo.core.model.DistributionRate;
 import cn.net.ibingo.core.model.Resources;
 import cn.net.ibingo.core.service.DistributionRateService;
+import cn.net.ibingo.core.service.NotifyDataQuartzStatisticsService;
 import cn.net.ibingo.core.service.ResourcesService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +46,10 @@ public class FristChannelController extends BaseController{
 
 	@Autowired
 	private DistributionRateService distributionRateService;
-	
+
+	//@Autowired
+	//private NotifyDataQuartzStatisticsService notifyDataQuartzStatisticsService;
+
 	@RequestMapping(value = "/list")
 	public String list(HttpSession session,FristChannelQueryBean queryBean, ModelMap modelMap){
 		PaginationList<FristChannel> pageDataList = fristChannelService.list(queryBean);
@@ -148,5 +152,12 @@ public class FristChannelController extends BaseController{
 	public void setRate(){
 
 	}
+	/*@RequestMapping(value = "/doStatis")
+	public void doStatis(HttpServletResponse response) {
+		try {
+			notifyDataQuartzStatisticsService.statisticsList();
+		} catch (Exception e) {
 
+		}
+	}*/
 }

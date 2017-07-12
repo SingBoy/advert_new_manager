@@ -3,6 +3,7 @@ package cn.net.ibingo.core.controller;
 import cn.net.ibingo.common.controller.BaseController;
 import cn.net.ibingo.common.utils.ConstantConfig;
 import cn.net.ibingo.common.utils.HttpUtil;
+import cn.net.ibingo.common.utils.ThreadPoolUtil;
 import cn.net.ibingo.core.model.Advertisers;
 import cn.net.ibingo.core.model.FristChannel;
 import cn.net.ibingo.core.model.Resources;
@@ -15,10 +16,12 @@ import cn.net.ibingo.core.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,50 +56,63 @@ public class VoluumNotifyController extends BaseController {
     @Autowired
     private DistributeRedisFactory distributeRedisFactory;
 
-    private  HttpUtil http = new HttpUtil();
+    private HttpUtil http = new HttpUtil();
 
 
     /**
      * j接受Voluum平台的回调数据
+     *
      * @param notify
      */
-	@RequestMapping("/notify")
+    @RequestMapping("/notify")
     @ResponseBody
-    public void voluumNotify(VoluumNotify notify){//http://m.nicegame.me/am/voluum/notify?trafficSourceId={trafficsource.id}&offerId={offer.id}&campaignId={campaign.id}&clickId={click.id}&payout={payout}&country={country}&p1={var1}
-        if (notify != null && !StringUtils.isEmpty(notify.getClickId()) && !StringUtils.isEmpty(notify.getOfferId()) && !StringUtils.isEmpty(notify.getTrafficSourceId())){
+    public void voluumNotify(final VoluumNotify notify) {
+        if (notify != null && !StringUtils.isEmpty(notify.getClickId()) && !StringUtils.isEmpty(notify.getOfferId()) && !StringUtils.isEmpty(notify.getTrafficSourceId())) {
             Integer callState = 0;
             Integer dailyLimit = 0;
 
             //查询资源名称、是否支持回调
             Resources resources = resourcesService.selectByOfferId(notify.getOfferId());
-            if(resources != null){
+            if (resources != null) {
                 notify.setOfferName(resources.getName());
                 callState = resources.getCallbackStatus();
                 dailyLimit = resources.getDailyLimit();
             }
             //查询广告主名称
-            if(resources != null && resources.getAdsId() != null ){
+            if (resources != null && resources.getAdsId() != null) {
                 Advertisers advertiser = advertisersService.get(resources.getAdsId());
-                if(advertiser != null){
+                if (advertiser != null) {
                     notify.setAffiliateNetworkName(advertiser.getName());
                     notify.setAffiliateNetworkId(advertiser.getVoluumAffiliateNetworkId());
                 }
             }
             //查询渠道名称、回调地址
-            FristChannel fristChannel = fristChannelService.selectByTrafficSourceId(notify.getTrafficSourceId());
-            if(fristChannel != null){
+            final FristChannel fristChannel = fristChannelService.selectByTrafficSourceId(notify.getTrafficSourceId());
+            if (fristChannel != null) {
                 notify.setTrafficSourceName(fristChannel.getName());
             }
 
             //根据渠道id和offerId查询分配比例
-            Float rate = distributionRateService.selectByTrafficIdAndOfferId(notify.getTrafficSourceId(),notify.getOfferId());
+            final Float rate = distributionRateService.selectByTrafficIdAndOfferId(notify.getTrafficSourceId(), notify.getOfferId());
             notify.setCreateDate(new Date());
             int count = voluumNotifyService.insertNotify(notify);
-            if(count > 0){
-                try{
-                    sendStatusByMessage(notify,fristChannel,callState,rate,dailyLimit);
-                }catch (Exception e){
-
+            if (count > 0) {
+                try {
+                    final Integer callStateTmp = callState;
+                    final Integer dailyLimitTmp = dailyLimit;
+                    Runnable rn = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                sendStatusByMessage(notify, fristChannel, callStateTmp, rate, dailyLimitTmp);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    ThreadPoolUtil.execute(rn);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -104,33 +120,35 @@ public class VoluumNotifyController extends BaseController {
 
     /**
      * 获取发送与否的状态位
+     *
      * @param message
      * @param iscallback
-     * @param  @return
+     * @param @return
      */
-    private VoluumNotify sendStatusByMessage(VoluumNotify message, FristChannel fristChannel, Integer iscallback, Float subscriptionRate,Integer dayLimit) {
+    private VoluumNotify sendStatusByMessage(VoluumNotify message, FristChannel fristChannel, Integer iscallback, Float subscriptionRate, Integer dayLimit) {
         int status = 0;// 发送状态位：0没发送，1发送
         try {
             // 支持回调
-            if(iscallback != null && iscallback == 1 && StringUtils.isNotBlank(fristChannel.getCallbackUrl())){
+            if (iscallback != null && iscallback == 1 && StringUtils.isNotBlank(fristChannel.getCallbackUrl())) {
                 // 订阅分成比例为0时不回调
-                if(subscriptionRate != null && subscriptionRate != 0){
+                if (subscriptionRate != null && subscriptionRate != 0) {
                     //是否超过日限量
-                        // 订阅分成比例为1时全部回调
-                        if(subscriptionRate == 1){
-                            status = 1;
-                            try {
-                                http.sendGet(this.jumpCallbackUrl(message,fristChannel));
-                                //当下发渠道时，修改数据类型
-                                voluumNotifyService.updateDataType(message.getClickId());
-                            } catch (Exception e) {
-                                status = 2;
-                            }
-                        } else {// 订阅分成比例大于0小于1时
-                            sysDownTraffic(message,fristChannel,status,subscriptionRate);
+                    // 订阅分成比例为1时全部回调
+                    if (subscriptionRate == 1) {
+                        status = 1;
+                        try {
+                            http.sendGet(this.jumpCallbackUrl(message, fristChannel));
+                            log.info("------------ down--------------" + message.getClickId());
+                            //当下发渠道时，修改数据类型
+                            voluumNotifyService.updateDataType(message.getClickId());
+                        } catch (Exception e) {
+                            status = 2;
                         }
+                    } else {// 订阅分成比例大于0小于1时
+                        sysDownTraffic(message, fristChannel, status, subscriptionRate);
                     }
-             }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -139,36 +157,37 @@ public class VoluumNotifyController extends BaseController {
 
     /**
      * 订阅分成比例大于0小于1时 增加同步 下发渠道数据
+     *
      * @param message
      * @param fristChannel
      * @param status
      * @param subscriptionRate
      */
-    public synchronized void sysDownTraffic(VoluumNotify message, FristChannel fristChannel, int status, Float subscriptionRate){
+    public synchronized void sysDownTraffic(VoluumNotify message, FristChannel fristChannel, int status, Float subscriptionRate) {
         StatusRedisModel statusRedisModel = new StatusRedisModel();
         statusRedisModel.setOfferId(message.getOfferId());
         statusRedisModel.setTrafficId(message.getTrafficSourceId());
         // 获取随机数
-        Set<Integer> statusSet = this.getStatusSet(statusRedisModel,subscriptionRate);
+        Set<Integer> statusSet = this.getStatusSet(statusRedisModel, subscriptionRate);
         // 获取移位指针
         DistributeRedisModel distributeRedisModel = new DistributeRedisModel();
         distributeRedisModel.setDate(new Date());
         distributeRedisModel.setOfferId(message.getOfferId());
         distributeRedisModel.setTrafficId(message.getTrafficSourceId());
         Integer count = distributeRedisFactory.get(distributeRedisModel);
-        if(count == null || count == 0 || count == ConstantConfig.DEFAULT_NUMBER){
+        if (count == null || count == 0 || count == ConstantConfig.DEFAULT_NUMBER) {
             count = 1;
-        } else if(count == ConstantConfig.DEFAULT_NUMBER - 1){
-            count ++;
+        } else if (count == ConstantConfig.DEFAULT_NUMBER - 1) {
+            count++;
             statusRedisFactory.delete(statusRedisModel);
         } else {
-            count ++;
+            count++;
         }
-        if(statusSet.contains(count)){
+        if (statusSet.contains(count)) {
             status = 0;
         } else {
             try {
-                http.sendGet(this.jumpCallbackUrl(message,fristChannel));
+                http.sendGet(this.jumpCallbackUrl(message, fristChannel));
                 //当下发渠道时，修改数据类型
                 voluumNotifyService.updateDataType(message.getClickId());
             } catch (Exception e) {
@@ -176,25 +195,27 @@ public class VoluumNotifyController extends BaseController {
             }
             status = 1;
         }
-        String ss = status != 0 ? "down":"not down";
-        log.info("------------count--------------"+count+"-------------status==========="+ss );
+        String ss = status != 0 ? "down" : "not down";
+        log.info("------------count--------------" + count + "-------------status===========" + ss);
         distributeRedisModel.setCount(count);
         distributeRedisFactory.add(distributeRedisModel);
     }
+
     /**
      * 获取不发送的随机数
+     *
      * @param
      * @param subscriptionRate
      * @return
      */
     private Set<Integer> getStatusSet(StatusRedisModel statusRedisModel, Float subscriptionRate) {
         StatusRedisModel tmpStatusRedisModel = statusRedisFactory.get(statusRedisModel);
-        Set<Integer> statusSet=new HashSet<Integer>();
+        Set<Integer> statusSet = new HashSet<Integer>();
         // 缓存中不存在，随机取1-100中的n个数
-        if( tmpStatusRedisModel == null){
-            while(true){
-                 statusSet.add((int)(Math.random()*100+1));
-                if( statusSet.size() == (100-subscriptionRate*100))
+        if (tmpStatusRedisModel == null) {
+            while (true) {
+                statusSet.add((int) (Math.random() * 100 + 1));
+                if (statusSet.size() == (100 - subscriptionRate * 100))
                     break;
             }
             statusRedisModel.setStatusSet(statusSet);
@@ -204,36 +225,48 @@ public class VoluumNotifyController extends BaseController {
         }
         return statusSet;
     }
+
     /**
      * 回调地址跳转
+     *
      * @param message
      */
-    private String jumpCallbackUrl(VoluumNotify message,FristChannel fristChannel) throws IOException {
-        if(!StringUtils.isEmpty(fristChannel.getCallbackUrl())){
+    private String jumpCallbackUrl(VoluumNotify message, FristChannel fristChannel) throws IOException {
+        if (!StringUtils.isEmpty(fristChannel.getCallbackUrl())) {
             StringBuffer sbf = new StringBuffer();
             sbf.append(fristChannel.getCallbackUrl());
-            if(fristChannel.getCallbackUrl().indexOf("?") != -1){
+
+            // 如果没有问号，有&，则不加问号；
+            // 如果没有问号也没有&，加问号；
+            // 如果有问号，则不管是否有&，都不需要加问号
+            if (fristChannel.getCallbackUrl().indexOf("?") > -1) {
                 sbf.append("&");
+            } else if (fristChannel.getCallbackUrl().indexOf("&") > -1) {
+                //有渠道只能识别&时，直接在渠道回调地址后面加上&
             } else {
                 sbf.append("?");
             }
-            if(!StringUtils.isEmpty(message.getP1())){
-                sbf.append(fristChannel.getP1()+"="+message.getP1()+"&");
+            if (message.getCampaignCpa() != null && message.getCampaignCpa() != 0) {
+                sbf.append("CPA=" + message.getCampaignCpa() + "&");
             }
-            if(!StringUtils.isEmpty(message.getP2())){
-                sbf.append(fristChannel.getP2()+"="+message.getP2()+"&");
+            if (!StringUtils.isEmpty(message.getP1())) {
+                sbf.append(fristChannel.getP1() + "=" + message.getP1() + "&");
             }
-            if(!StringUtils.isEmpty(message.getP3())){
-                sbf.append(fristChannel.getP3()+"="+message.getP3()+"&");
+            if (!StringUtils.isEmpty(message.getP2())) {
+                sbf.append(fristChannel.getP2() + "=" + message.getP2() + "&");
             }
-            if(!StringUtils.isEmpty(message.getP4())){
-                sbf.append(fristChannel.getP4()+"="+message.getP4()+"&");
+            if (!StringUtils.isEmpty(message.getP3())) {
+                sbf.append(fristChannel.getP3() + "=" + message.getP3() + "&");
             }
-            if(!StringUtils.isEmpty(message.getP5())){
-                sbf.append(fristChannel.getP5()+"="+message.getP5()+"&");
+            if (!StringUtils.isEmpty(message.getP4())) {
+                sbf.append(fristChannel.getP4() + "=" + message.getP4() + "&");
+            }
+            if (!StringUtils.isEmpty(message.getP5())) {
+                sbf.append(fristChannel.getP5() + "=" + message.getP5() + "&");
             }
             String resultStr = sbf.toString();
-            resultStr = resultStr.substring(0,resultStr.length()-1);
+            resultStr = resultStr.substring(0, resultStr.length() - 1);
+            log.info("callbackUrl======================"+resultStr);
             return resultStr;
         }
         return "";

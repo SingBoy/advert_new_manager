@@ -3,6 +3,7 @@ package cn.net.ibingo.core.service.impl;
 import cn.net.ibingo.common.utils.DateUtils;
 import cn.net.ibingo.core.dao.*;
 import cn.net.ibingo.core.model.*;
+import cn.net.ibingo.core.service.NotifyDataQuartzStatisticsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  * 定时统计回调数据
  */
 @Service
-public class NotifyDataQuartzStatisticsServiceImpl {
+public class NotifyDataQuartzStatisticsServiceImpl implements NotifyDataQuartzStatisticsService {
     private static Logger log = Logger.getLogger(String.valueOf(NotifyDataQuartzStatisticsServiceImpl.class));
     @Autowired
     private TimezoneCountryMapper timezoneCountryMapper;
@@ -32,8 +33,44 @@ public class NotifyDataQuartzStatisticsServiceImpl {
     @Autowired
     private VoluumNotifyMapper voluumNotifyMapper;
 
+  /*手动统计
+  @Override
+    public void statisticsList() {
+        List<TimezoneCountry> countryTimezoneList = timezoneCountryMapper.queryCoutryList();
+        if (countryTimezoneList != null && countryTimezoneList.size() > 0) {
+            String startDate = "";
+            String endDate = "";
+            Integer zone = null;
+            TimeZone oldZone = TimeZone.getTimeZone("GMT");
+            TimeZone newZone = null;
+            Date yesDay = null;
+            String [] strArray = {"01","02","03","04","05","06","07","08","09"};
+            for(int i = 0;i<strArray.length;i++){
+                yesDay =   DateUtils.getYesterdayByDate(DateUtils.parseStringToDate("2017-07-"+strArray[i]));
+                    for (TimezoneCountry tc : countryTimezoneList) {
+                    zone = tc.getTimezone() / 100;
+                    //计算时区
+                    if (zone != null && zone > 0) {
+                        newZone = TimeZone.getTimeZone("GMT-" + zone);
+                    } else {
+                        newZone = TimeZone.getTimeZone("GMT+" + Math.abs(zone));
+                    }
+                    //根据各个国家的时区 统计该国家对应的数量
+                    startDate = DateUtils.changeTimeZone(yesDay, oldZone, newZone);
+                    endDate = DateUtils.dateAddOne(startDate);
+                    accordOfferStatistics(yesDay,startDate, endDate, tc.getCountryIso());
+                    accordTrafficSourceStatistics(yesDay,startDate, endDate, tc.getCountryIso());
+                    accordAdvertisersStatistics(yesDay,startDate, endDate, tc.getCountryIso());
+                }
+            }
+            log.info("--------hans-------statistics compalete-----------------"+DateUtils.formatDateTimeAll(new Date()));
+        }
+    }*/
 
-    @Scheduled(cron = "0 0 4/4 * * ?")
+    /**
+     * 每天凌晨2:59开始，每7个小时1次
+     */
+    @Scheduled(cron = "0 59 2/7 * * ?")
     public void quartzAnalysis() {
         List<TimezoneCountry> countryTimezoneList = timezoneCountryMapper.queryCoutryList();
         if (countryTimezoneList != null && countryTimezoneList.size() > 0) {
@@ -86,7 +123,7 @@ public class NotifyDataQuartzStatisticsServiceImpl {
                 }
                 String key = "";
                 for (VoluumNotify voluum : voluumList) {
-                    key = voluum.getOfferId() + "_" + voluum.getCountry() + "_" + startDate.substring(0, 10);
+                    key = voluum.getOfferId() + "_" + voluum.getCountry() + "_" + DateUtils.formatDateToString(date);
                     if (!oldOfferStatisMap.containsKey(key)) {
                         offer = new OfferStatistics();
                         offer.setCountry(voluum.getCountry());
@@ -152,7 +189,7 @@ public class NotifyDataQuartzStatisticsServiceImpl {
                 }
                 String key = "";
                 for (VoluumNotify voluum : voluumList) {
-                    key = voluum.getOfferId() + "_" + voluum.getTrafficSourceId() + "_" + voluum.getCountry() + "_" + startDate.substring(0, 10);
+                    key = voluum.getOfferId() + "_" + voluum.getTrafficSourceId() + "_" + voluum.getCountry() + "_" + DateUtils.formatDateToString(date);
                     if (!oldTrafficSourceStatisticsMap.containsKey(key)) {
                         traffic = new TrafficSourceStatistics();
                         traffic.setCountry(voluum.getCountry());
@@ -223,7 +260,7 @@ public class NotifyDataQuartzStatisticsServiceImpl {
                 }
                 String key = "";
                 for (VoluumNotify voluum : voluumList) {
-                    key = voluum.getOfferId() + "_" + voluum.getAffiliateNetworkId() + "_" + voluum.getCountry() + "_" + startDate.substring(0, 10);
+                    key = voluum.getOfferId() + "_" + voluum.getAffiliateNetworkId() + "_" + voluum.getCountry() + "_" + DateUtils.formatDateToString(date);
                     if(!oldAdvertisersStatisticsMap.containsKey(key)){
                         advert = new AdvertisersStatistics();
                         advert.setCountry(voluum.getCountry());

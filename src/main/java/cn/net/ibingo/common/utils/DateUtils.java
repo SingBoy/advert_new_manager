@@ -43,6 +43,16 @@ public class DateUtils {
 		}
 		return date;
 	}
+
+	public static Date parseStringToDate(String str) {
+		Date date = null;
+		try {
+			date = sdf3.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
 	
 	public static String formatDateTime(Date date) {
 		return sdf.format(date);
@@ -75,6 +85,18 @@ public class DateUtils {
 	
 	public static Date getYesterday() {
 		Calendar cal = Calendar.getInstance();
+		cal.add(5, -1);
+		Date time = null;
+		try {
+			time = sdf3.parse(sdf3.format(cal.getTime()));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return time;
+	}
+	public static Date getYesterdayByDate(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		cal.add(5, -1);
 		Date time = null;
 		try {
