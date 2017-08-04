@@ -57,20 +57,6 @@
 									<div class="form-group">
 										<input type="text" name="endDate" id="endDate" value="${queryBean.endDate }" style="height: 32px;" class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="结束时间">
 									</div>
-									<%--<c:if test="${sessionScope.current_user.userRole != 2}">
-									<div class="form-group">
-										<select id="advertisersName" name="advertisersName" class="multiselect" style="width: 210px;">
-											<option value="">广告主</option>
-											<c:forEach items="${listAdvertisers}" var="item">
-												<option value="${item.name }" <c:if test="${queryBean.advertisersName== item.name}">selected="selected"</c:if> >
-													<c:if test="${item.name != null}">
-														${item.name } 
-													</c:if>
-												</option>
-											</c:forEach>
-										</select>
-									</div>
-									</c:if>--%>
 									<div class="form-group">
 										<select id="offerId" name="offerId" class="multiselect" style="width: 210px;">
 											<option value="">资源名称</option>
@@ -159,8 +145,9 @@
 							<c:url var="pageUrl" value="/trafficSourceStatistics/list">
 									<c:param name="startDate" value="${queryBean.startDate}" />
 									<c:param name="endDate" value="${queryBean.endDate}" />
-								<c:param name="offerId" value="${queryBean.offerId}" />
-									<c:param name="offerNameAlias" value="${queryBean.offerNameAlias}" />
+									<c:param name="offerId" value="${queryBean.offerId}" />
+									<c:param name="country" value="${queryBean.country}" />
+									<c:param name="trafficSourceId" value="${queryBean.trafficSourceId}" />
 							</c:url>
 							<page:pagerNav modelRef="pageDataList" url="${pageUrl}" type="beyond" />
 						</div>

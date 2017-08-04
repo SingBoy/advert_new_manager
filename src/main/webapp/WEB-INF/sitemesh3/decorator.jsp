@@ -40,6 +40,8 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/plugins/simpletree/SimpleTree.css"/>
 
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/plugins/jquery-model/common.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/plugins/jquery-model/layer.css"/>
 
 
 <!-- <script src="plugins/jquery/jquery-1.11.1.min.js"></script> -->
@@ -52,6 +54,9 @@
 
 <!--Skin Script: Place this script in head to load scripts for skins and rtl support-->
 <script src="${pageContext.request.contextPath}/plugins/beyond/js/skins.min.js"></script>
+<script src="${pageContext.request.contextPath}/plugins/jquery-model/layer.js"></script>
+<script src="${pageContext.request.contextPath}/plugins/jquery-model/jquery.min.js"></script>
+
 <sitemesh:write property="head" />
 </head>
 <!-- /Head -->
@@ -180,7 +185,7 @@
 								<span class="menu-text">首页</span>
 							</a>
 						</li>--%>
-
+						<c:if test="${sessionScope.current_user.userRole == 1}">
 							<li id="li0">
 								<a href="javascript:void(0);" class="menu-dropdown">
 									<i class="menu-icon fa fa-briefcase"></i>
@@ -192,9 +197,11 @@
 											<i class="menu-icon typcn typcn-clipboard"></i>
 											<span class="menu-text">数据查询</span>
 										</a>
+
 									</li>
 								</ul>
 							</li>
+						</c:if>
 							<li id="li1">
 								<a href="javascript:void(0);" class="menu-dropdown">
 									<i class="menu-icon fa fa-briefcase"></i>
@@ -284,22 +291,19 @@
 								</li>--%>
 							</ul>
 						</li>
-						</c:if>
-						<c:if test="${sessionScope.current_user.userRole != 2}">
+
 						<li id="li3">
 							<a href="javascript:void(0);" class="menu-dropdown">
 								<i class="menu-icon fa fa-folder-open"></i> 
 								<span class="menu-text">渠道管理</span>
 							</a>
 							<ul class="submenu">
-								<c:if test="${sessionScope.current_user.userRole != 2 && sessionScope.current_user.userRole != 4}">
 								<li>
 									<a href="${pageContext.request.contextPath}/fristChannel/list"> 
 										<i class="menu-icon typcn typcn-tag"></i> 
 										<span class="menu-text">一级渠道</span>
 									</a>
 								</li>
-								</c:if>
 								<%--<li>
 									<a href="${pageContext.request.contextPath}/twoChannel/list"> 
 										<i class="menu-icon typcn typcn-tags"></i> 
@@ -308,8 +312,6 @@
 								</li>--%>
 							</ul>
 						</li>
-						</c:if>
-						<c:if test="${sessionScope.current_user.userRole == 1 || sessionScope.current_user.userRole == 3}">
 						<li id="li4">
 							<a href="javascript:void(0);" class="menu-dropdown"> 
 								<i class="menu-icon fa fa-user"></i> 

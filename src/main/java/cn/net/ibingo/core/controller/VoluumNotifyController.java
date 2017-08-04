@@ -95,24 +95,28 @@ public class VoluumNotifyController extends BaseController {
             //根据渠道id和offerId查询分配比例
             final Float rate = distributionRateService.selectByTrafficIdAndOfferId(notify.getTrafficSourceId(), notify.getOfferId());
             notify.setCreateDate(new Date());
-            int count = voluumNotifyService.insertNotify(notify);
-            if (count > 0) {
-                try {
-                    final Integer callStateTmp = callState;
-                    final Integer dailyLimitTmp = dailyLimit;
-                    Runnable rn = new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                sendStatusByMessage(notify, fristChannel, callStateTmp, rate, dailyLimitTmp);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+            //根据clickId去重
+            boolean clickFlg  =voluumNotifyService.selectCountByClickId(notify.getClickId());
+            if(clickFlg){
+                int count = voluumNotifyService.insertNotify(notify);
+                if (count > 0) {
+                    try {
+                        final Integer callStateTmp = callState;
+                        final Integer dailyLimitTmp = dailyLimit;
+                        Runnable rn = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    sendStatusByMessage(notify, fristChannel, callStateTmp, rate, dailyLimitTmp);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                    };
-                    ThreadPoolUtil.execute(rn);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        };
+                        ThreadPoolUtil.execute(rn);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

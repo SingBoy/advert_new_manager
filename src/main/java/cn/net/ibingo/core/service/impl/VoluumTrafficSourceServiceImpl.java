@@ -186,15 +186,6 @@ public class VoluumTrafficSourceServiceImpl implements	VoluumTrafficSourceServic
 				if(i == 4)	stringBuffer.append("&p5={var5}");
 			}
 		}
-		/*if(listMap.size() == 0){
-			map = new HashMap<String,Object>();
-			map.put("index", 1);
-			map.put("name", "target");
-			map.put("parameter", "target");
-			map.put("placeholder", "{target}");
-			map.put("trackedInReports", true);
-			listMap.add(map);
-		}*/
 		params.put("postbackUrl", ConstantConfig.ADVERT_MANAGER_URL+stringBuffer);
 		params.put("customVariables", listMap);
 	}

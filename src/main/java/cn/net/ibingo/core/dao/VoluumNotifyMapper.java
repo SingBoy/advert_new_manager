@@ -21,6 +21,8 @@ public interface VoluumNotifyMapper {
 
     int delete(int id);
 
+    public int selectCountByClickId(String clickId);
+
     public List<VoluumNotify> selectOfferStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate,@Param("country")String country);
 
     public List<VoluumNotify> selectTrafficSourceStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate,@Param("country")String country);

@@ -223,16 +223,6 @@ public class DateUtils {
 	}
 	public static void main(String[] args) {
 		//System.out.println(getHour(new Date()));
-		Integer zone  = 400;
-		//计算时区
-		TimeZone oldZone = TimeZone.getTimeZone("GMT");
-		TimeZone newZone = null;
-		if (zone != null && zone > 0) {
-			newZone = TimeZone.getTimeZone("GMT-" + zone);
-		} else {
-			newZone = TimeZone.getTimeZone("GMT+" + Math.abs(zone));
-		}
-		String date = changeTimeZone(DateUtils.getYesterday(), TimeZone.getTimeZone("GMT"), newZone);
-		String dates = dateAddOne(date);
+		Date data  =new Date();
 	}
 }

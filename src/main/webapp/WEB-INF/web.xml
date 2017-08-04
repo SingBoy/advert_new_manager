@@ -57,6 +57,9 @@
             拦截/，restful风格 弊端：会导致静态文件（jpg,js,css）被拦截后不能正常显示。解决办法看dispatcher
         -->
     </servlet-mapping>
+
+
+
     <!-- 
     	Spring会创建一个WebApplicationContext上下文，称为父上下文（父容器） ，
     	保存在 ServletContext中，key是WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE的值。

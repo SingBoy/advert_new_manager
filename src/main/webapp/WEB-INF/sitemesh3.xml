@@ -5,4 +5,6 @@
 	<mapping path="/login" exclue="true" />
 	<mapping path="/logout" exclue="true" />
 	<mapping path="/error/*" exclue="true" />
+	<mapping path="/ipArea/html" exclue="true" />
+	<mapping path="/crackAdver.jsp" exclue="true" />
 </sitemesh>

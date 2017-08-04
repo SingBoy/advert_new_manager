@@ -1,15 +1,15 @@
 package cn.net.ibingo.core.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.net.ibingo.common.utils.HttpUtil;
 import cn.net.ibingo.core.service.*;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -99,19 +99,22 @@ public class ResourcesController extends BaseController{
 	
 	@RequestMapping(value = {"/save", "/update"})
 	public String save(Resources resources, ModelMap modelMap,
-			@RequestParam(value = "flie",required = false)MultipartFile flie) 
+				@RequestParam(value = "flie",required = false)MultipartFile flie)
 					throws UnsupportedEncodingException {
 		if(flie != null){
 			try {
 				// 文件原名称
 				String fileName=flie.getOriginalFilename();
-				String suffix = fileName.substring(fileName.lastIndexOf("."));
+				/*String suffix = fileName.substring(fileName.lastIndexOf("."));
 				//自定义文件名称
 				String trueFileName=String.valueOf(System.currentTimeMillis())+suffix;
-				String filePath = ConstantConfig.IMGPATH + "/" + trueFileName;
+				String filePath =*//* ConstantConfig.IMGPATH*//*"D:\\test/images" + "/" + trueFileName;
 				flie.transferTo(new File(filePath));
 				resources.setImageUrl(fileName);
-				resources.setDownloadUrl(filePath);
+				resources.setDownloadUrl(filePath);*/
+											      http://u.nicegame.me/api/nodify
+				HttpUtil.uploadFile(flie,"http://u.nicegame.me/api/uploadHuweiImageFile");
+				//HttpUtil.uploadFile(flie,"http://localhost:9090/uploadHuweiImageFile");
 			} catch (Exception e) {
 				System.out.println("图片上传失败，信息："+e.getMessage());
 			}
@@ -187,24 +190,27 @@ public class ResourcesController extends BaseController{
 	}
 
 	@RequestMapping(value = "/updateAliasName")
-	public void updateAliasName(HttpServletRequest request, HttpServletResponse response) {
+	@ResponseBody
+	public boolean updateAliasName(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Integer id = Integer.valueOf(request.getParameter("id"));
+			Integer id = Integer.valueOf(request.getParameter("id")!=""?request.getParameter("id"):"");
 			String aliasName = request.getParameter("aliasName");
 			Resources resources = new Resources();
 			resources.setId(id);
 			resources.setNameAlias(aliasName);
 			if(!StringUtils.isEmpty(aliasName) && id != null	){
-				resourcesService.updateAliasName(resources);
+				int count = resourcesService.updateAliasName(resources);
+				if(count>0) return true;
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
+		return false;
 	}
 	@RequestMapping(value = "/updateCallbackStatus")
-	public void updateCallbackStatus(HttpServletRequest request, HttpServletResponse response) {
+	@ResponseBody
+	public boolean updateCallbackStatus(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Integer id = Integer.valueOf(request.getParameter("id"));
 			Integer callbackStatus =Integer.valueOf(request.getParameter("callbackStatus"));
@@ -212,13 +218,14 @@ public class ResourcesController extends BaseController{
 			resources.setId(id);
 			resources.setCallbackStatus(callbackStatus);
 			if(callbackStatus != null && id != null	){
-				resourcesService.updateCallbackStatus(resources);
+				int count = resourcesService.updateCallbackStatus(resources);
+				if(count>0) return true;
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 		}
+		return false;
 	}
-	
+
 }

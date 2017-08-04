@@ -107,21 +107,6 @@ public class AdvertisersController extends BaseController{
 		return "redirect:/advertisers/list";
 	}
 
-	@RequestMapping(value = "/voluumRequest")
-	public void voluumRequest(VoluumNotify notify,HttpServletRequest request)  throws UnsupportedEncodingException {
-		try {
-			String username = request.getParameter("offerName");
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("cid",notify.getClickId());
-			HttpUtil httpUtil = new HttpUtil();
-			httpUtil.sendHttpClientPost("http://t.nicegame.me/postback",params,null);
-
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-		}
-	}
 
 
 

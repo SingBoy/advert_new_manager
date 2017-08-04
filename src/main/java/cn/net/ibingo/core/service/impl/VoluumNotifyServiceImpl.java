@@ -48,4 +48,13 @@ public class VoluumNotifyServiceImpl implements VoluumNotifyService {
 	public int delete(int id) {
 		return voluumNotifyMapper.delete(id);
 	}
+
+	@Override
+	public boolean selectCountByClickId(String clickId) {
+		int count = voluumNotifyMapper.selectCountByClickId(clickId);
+		if(count>0){
+			return false;
+		}
+		return true;
+	}
 }

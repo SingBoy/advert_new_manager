@@ -155,7 +155,7 @@ public class   HttpRequester {
     private HttpRespons send(String urlString, String method,
                              Map<String, Object> parameters, Map<String, Object> propertys)
             throws IOException {
-       /* HttpURLConnection urlConnection = null;
+        HttpURLConnection urlConnection = null;
         if (method.equalsIgnoreCase("GET") && parameters != null) {
             StringBuffer param = new StringBuffer();
             int i = 0;
@@ -188,13 +188,15 @@ public class   HttpRequester {
                 param.append("?");
                 param.append(key).append("=").append(parameters.get(key));
             }
+            urlConnection.setRequestProperty("contentType", "utf-8");
+            urlConnection.setRequestProperty("Content-Type","application/json");
             urlConnection.getOutputStream().write(param.toString().getBytes());
             urlConnection.getOutputStream().flush();
             urlConnection.getOutputStream().close();
         }
         if (method.equalsIgnoreCase("DELETE") && parameters != null) {
             StringBuffer param = new StringBuffer();
-            param.append("{");
+            /*param.append("{");
             int i = 0;
             for (String key : parameters.keySet()) {
                 if(i!=0){
@@ -203,54 +205,16 @@ public class   HttpRequester {
                 param.append("'"+key+"'").append(":").append("'"+parameters.get(key)+"'");
                 i++;
             }
-            param.append("}");
+            param.append("}");*/
+            //param.append('{\"userName\":\"abc\",\"uid\":\"1\"}');
             urlConnection.getOutputStream().write(param.toString().getBytes());
             urlConnection.getOutputStream().flush();
             urlConnection.getOutputStream().close();
         }
 
-
-        return this.makeContent(urlString, urlConnection);*/
-        HttpURLConnection urlConnection = null;
-
-        if (method.equalsIgnoreCase("GET") && parameters != null) {
-            StringBuffer param = new StringBuffer();
-            int i = 0;
-            for (String key : parameters.keySet()) {
-                if (i == 0)
-                    param.append("?");
-                else
-                    param.append("&");
-                param.append(key).append("=").append(parameters.get(key));
-                i++;
-            }
-            urlString += param;
-        }
-        URL url = new URL(urlString);
-        urlConnection = (HttpURLConnection) url.openConnection();
-
-        urlConnection.setRequestMethod(method);
-        urlConnection.setDoOutput(true);
-        urlConnection.setDoInput(true);
-        urlConnection.setUseCaches(false);
-
-        if (propertys != null)
-            for (String key : propertys.keySet()) {
-                urlConnection.addRequestProperty(key, propertys.get(key).toString());
-            }
-
-        if (method.equalsIgnoreCase("POST") && parameters != null) {
-            StringBuffer param = new StringBuffer();
-            for (String key : parameters.keySet()) {
-                param.append("&");
-                param.append(key).append("=").append(parameters.get(key));
-            }
-            urlConnection.getOutputStream().write(param.toString().getBytes());
-            urlConnection.getOutputStream().flush();
-            urlConnection.getOutputStream().close();
-        }
 
         return this.makeContent(urlString, urlConnection);
+
     }
 
     /**
