@@ -25,5 +25,7 @@ public interface FristChannelService {
 	public int selectCount();
 
 	public FristChannel selectByTrafficSourceId(String trafficSourceId);
+
+	public void insertChannelAndResour(String distribution,String trafficId);
 	
 }

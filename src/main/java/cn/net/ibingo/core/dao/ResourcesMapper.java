@@ -46,5 +46,5 @@ public interface ResourcesMapper {
     int updateAliasName(Resources resources);
 
     int updateCallbackStatus(Resources resources);
-    
+
 }

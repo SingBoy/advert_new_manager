@@ -91,7 +91,6 @@
 											<td class="text-center">
 												<a href="${pageContext.request.contextPath}/advertisers/doUpdate/${item.id}?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a> 
 												<a onclick="confirmImg(${item.id})" class="btn btn-darkorange btn-xs shiny"><i class="fa fa-trash-o"></i> 删除</a>
-												<a onclick="sss()" class="btn btn-darkorange btn-xs shiny"><i class="fa fa-trash-o"></i> 删除</a>
 											</td>
 										</tr>
 									</c:forEach>
@@ -124,18 +123,6 @@
 			}
 		}
 
-		function sss(){
-            $.ajax({
-                url: "${pageContext.request.contextPath}/advertisers/voluumRequest",
-                type :"POST",
-                data:{offerId:"123",offerName:"456"},
-                async: false,
-                dataType : "text",
-                success: function(date){
-
-                }
-            });
-		}
 
 	</script>
 </body>

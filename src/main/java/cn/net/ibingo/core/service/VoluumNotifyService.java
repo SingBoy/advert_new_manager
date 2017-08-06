@@ -17,4 +17,6 @@ public interface VoluumNotifyService {
 	public int updateDataType(String clickId);
 
 	public int delete(int id);
+
+	public boolean selectCountByClickId(String clickId);
 }

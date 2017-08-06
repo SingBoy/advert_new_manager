@@ -208,6 +208,7 @@
 			<version>1.10.3</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<finalName>advert_new_manager</finalName>
 		<plugins>

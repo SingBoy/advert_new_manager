@@ -15,7 +15,7 @@
 	<div class="page-breadcrumbs">
 		<ul class="breadcrumb">
 			<li><i class="fa fa-home"></i>统计数据查询</li>
-			<li class="active"><a href="${pageContext.request.contextPath}/trafficSourceStatistics/rateList">以渠道身份查询</a></li>
+			<li class="active"><a href="${pageContext.request.contextPath}/trafficSourceStatistics/rateList">${sessionScope.current_user.userRole == 3?"按渠道查询":"以渠道身份查询"}</a></li>
 		</ul>
 	</div>
 	<!-- Page Header -->
@@ -57,30 +57,27 @@
 									<div class="form-group">
 										<input type="text" name="endDate" id="endDate" value="${queryBean.endDate }" style="height: 32px;" class="Wdate" onFocus="WdatePicker({lang:'zh-cn',dateFmt:'yyyy-MM-dd'})" placeholder="结束时间">
 									</div>
-									<%--<c:if test="${sessionScope.current_user.userRole != 2}">
-									<div class="form-group">
-										<select id="advertisersName" name="advertisersName" class="multiselect" style="width: 210px;">
-											<option value="">广告主</option>
-											<c:forEach items="${listAdvertisers}" var="item">
-												<option value="${item.name }" <c:if test="${queryBean.advertisersName== item.name}">selected="selected"</c:if> >
-													<c:if test="${item.name != null}">
-														${item.name } 
-													</c:if>
-												</option>
-											</c:forEach>
-										</select>
-									</div>
-									</c:if>--%>
 									<div class="form-group">
 										<select id="offerId" name="offerId" class="multiselect" style="width: 210px;">
 											<option value="">资源名称</option>
-											<c:forEach items="${listResources}" var="item">
-												<option value="${item.voluumOfferId }" <c:if test="${queryBean.offerId== item.voluumOfferId}">selected="selected"</c:if> >
-													<c:if test="${item.name != null}">
-														${item.name }
-													</c:if>
-												</option>
-											</c:forEach> 
+											<c:if test="${sessionScope.current_user.userRole != 3 }">
+												<c:forEach items="${listResources}" var="item">
+													<option value="${item.voluumOfferId }" <c:if test="${queryBean.offerId== item.voluumOfferId}">selected="selected"</c:if> >
+														<c:if test="${item.name != null}">
+															${item.name }
+														</c:if>
+													</option>
+												</c:forEach>
+											</c:if>
+											<c:if test="${sessionScope.current_user.userRole == 3 }">
+												<c:forEach items="${listResources}" var="item">
+													<option value="${item.voluumOfferId }" <c:if test="${queryBean.offerId== item.voluumOfferId}">selected="selected"</c:if> >
+														<c:if test="${item.nameAlias != null}">
+															${item.nameAlias }
+														</c:if>
+													</option>
+												</c:forEach>
+											</c:if>
 										</select>
 									</div>
 									<div class="form-group">
@@ -123,8 +120,10 @@
 									<th class="text-center" style="width:100px;">日期</th>
 									<th class="text-center" style="width:100px;">国家</th>
 									<th class="text-center" style="width:300px;">资源名称</th>
-									<th class="text-center" style="width:250px;">资源别名</th>
-									<th class="text-center" style="width:250px;">渠道名称</th>
+									<c:if test="${sessionScope.current_user.userRole != 3 }">
+										<th class="text-center" style="width:250px;">资源别名</th>
+										<th class="text-center" style="width:250px;">渠道名称</th>
+									</c:if>
 									<th class="text-center" style="width:80px;">访问数量</th>
 									<th class="text-center" style="width:80px;">转化数量</th>
 									<th class="text-center" style="width:80px;">转化率</th>
@@ -135,9 +134,13 @@
 									<tr>
 										<td class="text-center" style="word-break:break-all;"><fmt:formatDate value="${item.date}" pattern="yyyy-MM-dd" /></td>
 										<td class="text-center" style="word-break:break-all;">${item.country }</td>
-										<td class="text-center" style="word-break:break-all;">${item.offerName }</td>
+										<c:if test="${sessionScope.current_user.userRole != 3 }">
+											<td class="text-center" style="word-break:break-all;">${item.offerName }</td>
+										</c:if>
 										<td class="text-center" style="word-break:break-all;">${item.offerNameAlias }</td>
-										<td class="text-center" style="word-break:break-all;">${item.trafficSourceName }</td>
+										<c:if test="${sessionScope.current_user.userRole != 3 }">
+											<td class="text-center" style="word-break:break-all;">${item.trafficSourceName }</td>
+										</c:if>
 										<td class="text-center" style="word-break:break-all;">${item.visitsNum}</td>
 										<td class="text-center" style="word-break:break-all;">${item.conversNum}</td>
 										<td class="text-center" style="word-break:break-all;">
@@ -162,7 +165,8 @@
 								<c:param name="startDate" value="${queryBean.startDate}" />
 								<c:param name="endDate" value="${queryBean.endDate}" />
 								<c:param name="offerId" value="${queryBean.offerId}" />
-								<c:param name="offerNameAlias" value="${queryBean.offerNameAlias}" />
+								<c:param name="country" value="${queryBean.country}" />
+								<c:param name="trafficSourceId" value="${queryBean.trafficSourceId}" />
 							</c:url>
 							<page:pagerNav modelRef="pageDataList" url="${pageUrl}" type="beyond" />
 						</div>

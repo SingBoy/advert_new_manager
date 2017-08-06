@@ -68,8 +68,9 @@
 									<tr>
 										<th class="text-center" style="width:25%">渠道名称</th>
 										<th class="text-center" style="width:8%">负责人</th>
-										<th class="text-center" style="width:10%">分成比例</th>
-										<th class="text-center" style="width:30%">描述</th>
+										<th class="text-center" style="width:7%">分成比例</th>
+										<th class="text-center" style="width:10%">分配比例</th>
+										<th class="text-center" style="width:25%">描述</th>
 										<th class="text-center" style="width:12%">更新时间</th>
 										<th style="width:15%"></th>
 									</tr>
@@ -80,6 +81,11 @@
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
 											<td class="text-center" style="word-break:break-all;">${item.leader }</td>
 											<td class="text-center" style="word-break:break-all;">${item.dividedRate }</td>
+											<td class="text-center" style="word-break:break-all;">
+											<div style="float:left" class="col-sm-3">
+													<a href="${pageContext.request.contextPath}/fristChannel/doFindDistriRate/${item.id}?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-palegreen btn-xs shiny"><i class="fa fa-share-square-o"></i>设置比例</a>
+											</div>
+										</td>
 											<c:choose>
 												<c:when test="${fn:length(item.description) ne 0}">
 													<td class="text-center" style="word-break:break-all;">${item.description}</td>
@@ -94,6 +100,7 @@
 											</td>--%>
 											<td class="text-center"><fmt:formatDate value="${item.modifyDate}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 											<td class="text-center">
+
 												<a href="${pageContext.request.contextPath}/fristChannel/doUpdate/${item.id}?keyword=${queryBean.keyword}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a> 
 												<a onclick="confirmImg(${item.id})" class="btn btn-darkorange btn-xs shiny"><i class="fa fa-trash-o"></i> 删除</a>
 											</td>
@@ -115,11 +122,15 @@
 			</div>
 		</div>
 	</div>
+
+
+
 	<!-- /Page Body -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$(".multiselect").select2();            
 		});
+
 		
 		function confirmImg(id) {
 			if (confirm("你确认要删除吗？")){
@@ -127,6 +138,7 @@
 				"?keyword="+$("#keyword").val()+"&currentPage="+${queryBean.currentPage}+"&pageSize="+${queryBean.pageSize};
 			}
 		}
+
 	</script>
 </body>
 </html>

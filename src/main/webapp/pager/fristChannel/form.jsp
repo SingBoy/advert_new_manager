@@ -82,24 +82,12 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
+							<%--<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">订阅量分配比例</label>
-
-								<%--<div style = "display:inline;">
-									<div style="float:left" class="col-sm-3">
-									<input type="text" class="form-control" id="subscriptionRate" name="subscriptionRate" value="${fristChannel.subscriptionRate}" placeholder="订阅量分配比例">
-									<label class="error" for="subscriptionRate" style="display:none;">请填写订阅量分配比例</label>
-									<label class="error" for="subscriptionRate" style="display:none;">不能大于1</label>
-									</div>
-									<div style="float:left;padding-top:5px;" class="col-sm-2">
-										<nobr style="font-size:14px;color:red;">(0-1)</nobr>
-									</div>
-
-								</div>--%>
 								<div style="float:left" class="col-sm-3">
 									<a type="button" id="lookOver" class="btn btn-primary" onclick="ModalDialog()"><i class="fa fa-plus"></i> 设置分配比例</a>
 								</div>
-							</div>
+							</div>--%>
 
 							<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">回调地址(<nobr style="font-size:14px;color:red;">http://打头</nobr>)</label>
@@ -160,7 +148,7 @@
 								<button type="button" class="btn btn-primary" id="submitInput">
 									<i class="fa fa-save"></i> 保存
 								</button>
-								<input type="hidden" name="distribution" id="distribution" value="${fristChannel.distribution}"><%----%>
+
 							</div>
 						</form>
 					</div>
@@ -171,70 +159,7 @@
 
 
 	<!--广告弹框 -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-		<div class="modal-dialog" style="width:50%;" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-							aria-hidden="true">×</span></button>
-					<h4 class="modal-title" id="exampleModalLabel">设置分成比例</h4>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-lg-7  col-sm-5">
-										<label><span class='text'>广告名称</span></label>
-						</div>
-						<div class="row">
-								<label><span class='text'>分配比例</span></label>
-						</div>
-					</div>
-				</div>
-				<div class="modal-body">
 
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-lg-7 col-sm-5">
-							<span class="text" style="">全局比例</span>
-						</div>
-						<div class="row">
-							<input type="text" class="colored-success" id="allRate" name="allRate" value=""/>
-							<label class="error" for="" style="display:none;">请输入正确的比例</label>
-							<nobr style="font-size:14px;color:red;">(0-1)</nobr>
-						</div>
-
-						<div class="col-lg-7 col-sm-5">
-						</div>
-						<div class="row">
-							<label><input type="checkbox" id="allRateBox" name="allRateBox" title=""><span class="text">是否全局设置</span></label>
-						</div>
-						<hr>
-					</div>
-						<c:forEach items="${listResources}" var="resource">
-							<div class="row">
-								<div class="col-lg-7 col-sm-5">
-									<span class="text" style="">${resource.name}</span>
-								</div>
-								<div class="row">
-									<input type="text" class="colored-success" id="rate_${resource.voluumOfferId}" name="rateName" value="${resource.subscriptionRate}"/>
-									<label class="error" for="rate_${resource.voluumOfferId}" style="display:none;">请输入正确的比例</label>
-									<input type="hidden" class="colored-success" name="voluumIds" value="${resource.voluumOfferId}"/>
-									<nobr style="font-size:14px;color:red;">(0-1)</nobr>
-								</div>
-
-							</div>
-							<hr>
-						</c:forEach>
-
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" onclick="saveOperator()">确定</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<script type="text/javascript">
 		/*$("#callbackUrl").change(function(){
@@ -327,63 +252,9 @@
 				$("#fristChannel_form").submit();
 			}
 		});
-        function ModalDialog(){
-            $('#myModal').modal('show').css({
-                width: '100%',
-            });
-            $('.modal').css({'overflow-x':'scroll'});
-        }
 
-        function saveOperator(){
-			var str = "";
-            var flg = true;
-            var reg = /^[0-9]+.?[0-9]*$/;
-            var flgBox = $("#allRateBox").is(":checked");
-            if(!flgBox){
-				$('input[name="voluumIds"]').each(function(){
-					var offerId = $(this).val();
-					var subscriptionRate = $.trim($("#rate_"+offerId).val());
-					if(offerId != null && offerId != "" ){
-					    if(subscriptionRate != null && subscriptionRate!="" ){
-                            if(!reg.test(subscriptionRate) || subscriptionRate > 1){
-                                $("#rate_"+offerId).next().show();
-                                flg = false;
-                            }else{
-                                $("#rate_"+offerId).next().hide();
-                                str += "{\"voluumOfferId\":\"" + offerId + "\",\"subscriptionRate\":\"" + subscriptionRate + "\"}&";
-                            }
-						}else{
-                            $("#rate_"+offerId).next().hide();
-                            str += "{\"voluumOfferId\":\"" + offerId + "\",\"subscriptionRate\":\"" + 1 + "\"}&";
-						}
-					}
-				});
-            }else{
-				var subscriptionRate = $.trim($("#allRate").val());
-				if (subscriptionRate != null && subscriptionRate != "") {
-					if (confirm("当前渠道所有广告的分成比例将被修改，你确定修改吗？")) {
-						if (!reg.test(subscriptionRate) || subscriptionRate > 1) {
-							$("#allRate").next().show();
-							flg = false;
-						}
-						$('input[name="voluumIds"]').each(function () {
-							var offerId = $(this).val();
-							$("#allRate").next().hide();
-							str += "{\"voluumOfferId\":\"" + offerId + "\",\"subscriptionRate\":\"" + subscriptionRate + "\"}&";
-						});
-					}else{
-                        flg = false;
-					}
-				} else {
-					$("#allRate").next().show();
-					flg = false;
-				}
-			}
-            if(flg){
-                $("#distribution").val(str);
-                $('#myModal').modal('hide');
-            }
-        }
+
+
 	</script>
 </body>
 </html>

@@ -18,6 +18,7 @@ import cn.net.ibingo.core.service.NotifyDataQuartzStatisticsService;
 import cn.net.ibingo.core.service.ResourcesService;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +82,7 @@ public class FristChannelController extends BaseController{
 		modelMap.addAttribute(ConstantConfig.QUERYBEAN,queryBean);
 		modelMap.addAttribute(ConstantConfig.FRISTCHANNEL,fristChannel);
 		//资源名称
-		List<Resources> listResources = resourcesService.selectAll(null);
+		/*List<Resources> listResources = resourcesService.selectAll(null);
 		List<DistributionRate> listDisRate =  distributionRateService.selectByTrafficeId(fristChannel.getVoluumTrafficSourceId());
 		Map<String,DistributionRate> rateMap = new HashMap<String,DistributionRate>();
 		List<Resources> resourcesList = new ArrayList<Resources>();
@@ -111,7 +112,7 @@ public class FristChannelController extends BaseController{
 				}
 			}
 		}
-		modelMap.addAttribute(ConstantConfig.LISTRESOURCES,resourcesList);
+		modelMap.addAttribute(ConstantConfig.LISTRESOURCES,resourcesList);*/
 		return "pager/fristChannel/form";
 	}
 	
@@ -149,15 +150,50 @@ public class FristChannelController extends BaseController{
 		return listFristChannel;
 	}
 
-	public void setRate(){
-
-	}
-	/*@RequestMapping(value = "/doStatis")
-	public void doStatis(HttpServletResponse response) {
-		try {
-			notifyDataQuartzStatisticsService.statisticsList();
-		} catch (Exception e) {
-
+	@RequestMapping("/doFindDistriRate/{id}")
+	public String doFindDistriRate(@PathVariable Integer id, ModelMap modelMap,FristChannelQueryBean queryBean){
+		List<Resources> listResources = resourcesService.selectAll(null);
+		FristChannel fristChannel = fristChannelService.get(id);
+		List<DistributionRate> listDisRate =  distributionRateService.selectByTrafficeId(fristChannel.getVoluumTrafficSourceId());
+		Map<String,DistributionRate> rateMap = new HashMap<String,DistributionRate>();
+		List<Resources> resourcesList = new ArrayList<Resources>();
+		boolean flg = false;
+		if(listResources != null && listResources.size()>0){
+			if(listDisRate != null && listDisRate.size()>0){
+				for(Resources resource : listResources) {
+					if(!StringUtils.isEmpty(resource.getVoluumOfferId())) {
+						flg = false;
+						for (DistributionRate rate : listDisRate) {
+							if (resource.getVoluumOfferId().equals(rate.getVoluumOfferId())) {
+								resource.setSubscriptionRate(rate.getSubscriptionRate());
+								resourcesList.add(resource);
+								flg = true;
+							}
+						}
+						if (!flg) {
+							resourcesList.add(resource);
+						}
+					}
+				}
+			}else {
+				for(Resources resource : listResources) {
+					if(!StringUtils.isEmpty(resource.getVoluumOfferId())) {
+						resourcesList.add(resource);
+					}
+				}
+			}
 		}
-	}*/
+		modelMap.addAttribute(ConstantConfig.FRISTCHANNEL,fristChannel);
+		modelMap.addAttribute(ConstantConfig.QUERYBEAN,queryBean);
+		modelMap.addAttribute(ConstantConfig.LISTRESOURCES,resourcesList);
+		return "pager/fristChannel/rateform";
+	}
+
+	@RequestMapping(value = {"/saveRate"})
+	public String saveRate(@Param("rate") String rate,@Param("trafficId") String trafficId,@Param("keyword") String keyword,@Param("currentPage") Integer currentPage,@Param("pageSize") Integer pageSize,ModelMap modelMap) throws UnsupportedEncodingException {
+		fristChannelService.insertChannelAndResour(rate,trafficId);
+		return "redirect:/fristChannel/list?keyword="+(java.net.URLEncoder.encode(keyword,"UTF-8"))+"&currentPage="+
+				currentPage+"&pageSize="+pageSize;
+	}
+
 }

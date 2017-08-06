@@ -81,8 +81,12 @@
 			<mvc:interceptor>
 				<mvc:mapping path="/**" />
 				<mvc:exclude-mapping path="/login"/>
-				<mvc:exclude-mapping path="/logout"/>
+				<mvc:exclude-mapping path="/voluum/**"/>
+				<mvc:exclude-mapping path="/logout/**"/>
+				<mvc:exclude-mapping path="/plugins/**"/>
 				<mvc:exclude-mapping path="/error/**"/>
+				<mvc:exclude-mapping path="/ipArea/html"/>
+				<mvc:exclude-mapping path="/ipArea/printHtml"/>
 				<bean class="cn.net.ibingo.common.interceptor.AuthInterceptor" />
 			</mvc:interceptor>
 		<!--<mvc:interceptor>

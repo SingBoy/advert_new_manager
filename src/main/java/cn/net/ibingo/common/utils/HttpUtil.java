@@ -9,18 +9,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.springframework.web.multipart.MultipartFile;
+import sun.rmi.runtime.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -400,5 +396,60 @@ public class HttpUtil {
         }
         return sb.toString();
     }
+
+
+    public static String uploadFile(MultipartFile file, String RequestURL) {
+        String result = null;
+        String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
+        String PREFIX = "--",LINE_END = "\r\n",CONTENT_TYPE = "multipart/form-data";
+        try {
+            URL url = new URL(RequestURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(1000 * 1000);
+            conn.setConnectTimeout(1000 * 1000);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Charset", "utf-8");
+            conn.setRequestProperty("connection", "keep-alive");
+            conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+            if (file != null) {
+                DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+                StringBuffer sb = new StringBuffer();
+                sb.append(PREFIX);sb.append(BOUNDARY);
+                sb.append(LINE_END);
+                sb.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getOriginalFilename() + "\"" + LINE_END);
+                sb.append("Content-Type: application/octet-stream; charset=" + "utf-8" + LINE_END);
+                sb.append(LINE_END);
+                dos.write(sb.toString().getBytes());
+                InputStream is = file.getInputStream();//new FileInputStream(file);
+                byte[] bytes = new byte[1024];
+                int len;
+                while ((len = is.read(bytes)) != -1) {
+                    dos.write(bytes, 0, len);
+                }
+
+                is.close();
+                dos.write(LINE_END.getBytes());
+                byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
+                dos.write(end_data);
+                dos.flush();
+
+                InputStream input = conn.getInputStream();
+                StringBuffer sb1 = new StringBuffer();
+                int ss;
+                while ((ss = input.read()) != -1) {
+                    sb1.append((char) ss);
+                }
+                result = sb1.toString();
+                input.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
 }

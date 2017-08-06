@@ -1,11 +1,11 @@
 package cn.net.ibingo.core.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import cn.net.ibingo.core.dao.DistributionRateMapper;
+import cn.net.ibingo.core.dao.ResourcesMapper;
 import cn.net.ibingo.core.model.DistributionRate;
+import cn.net.ibingo.core.model.Resources;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,9 @@ public class FristChannelServiceImpl implements FristChannelService {
 	
 	@Autowired
 	private FristPromotionMapper fristPromotionMapper;
+
+	@Autowired
+	private ResourcesMapper resourcesMapper;
 	
 	//@Autowired
 	//private AnalysisChannelMapper analysisChannelMapper;
@@ -68,10 +71,7 @@ public class FristChannelServiceImpl implements FristChannelService {
 			fristChannel.setCode(record.getCode());
 			fristChannelMapper.updateByPrimaryKeySelective(fristChannel);
 
-			//当分配比例对应字段的值为空时，不更新，防止更新渠道时没有点击渠道分配按钮，删除了该渠道下的比例分配
-			if(!StringUtils.isEmpty(fristChannel.getDistribution())){
-				insertChannelAndResour(fristChannel.getDistribution(),fristChannel.getVoluumTrafficSourceId(),1);
-			}
+
 			//更新Voluum上该渠道的信息
 			FristChannel fristChannel1 = get(fristChannel.getId());
 			if(!StringUtils.isEmpty(fristChannel1.getVoluumTrafficSourceId())){
@@ -94,40 +94,12 @@ public class FristChannelServiceImpl implements FristChannelService {
 				fristChannel.setVoluumTrafficSourceId(voluumTrafficSourceId);
 				//将Voluum平台的渠道数据的id回绑定到系统中
 				fristChannelMapper.updateVoluumTrafficSourceIdByCode(fristChannel);
-				insertChannelAndResour(fristChannel.getDistribution(),voluumTrafficSourceId,0);
+				setAllOfferRate(voluumTrafficSourceId);
 			}
 			
 		}
 		//fristChannelRedis.delete(fristChannel.getCode());
 		//fristChannelRedis.add(fristChannel);
-	}
-
-
-    /**
-     * 保存渠道和广告之间的分配比例
-     * @param distribution
-     * @param trafficId
-     * @param type 1：更新
-     *              0：新增
-     */
-	public void insertChannelAndResour(String distribution,String trafficId,int type){
-		//单渠道更新时，先删除渠道和广告对应的比例。然后重新添加
-	    if(type == 1){
-            distributionRateMapper.deleteDistributionByTrafficId(trafficId);
-        }
-		String [] strDisArray = distribution.split("&");
-		List<DistributionRate> rateList = new ArrayList<DistributionRate>(             );
-		if(strDisArray !=null && strDisArray.length>0){
-			for(int i = 0;i<strDisArray.length;i++){
-				if(!StringUtils.isEmpty(strDisArray[i])){
-					JSONObject obj = new JSONObject().fromObject(strDisArray[i]);//将json字符串转换为json对象
-					//将json对象转换为java对象
-					DistributionRate dr = (DistributionRate)JSONObject.toBean(obj,DistributionRate.class);
-					dr.setVoluumTrafficSourceId(trafficId);
-					distributionRateMapper.insertSelective(dr);
-				}
-			}
-		}
 	}
 
 	@Override
@@ -181,5 +153,71 @@ public class FristChannelServiceImpl implements FristChannelService {
 	@Override
 	public FristChannel selectByTrafficSourceId(String trafficSourceId) {
 		return fristChannelMapper.selectByTrafficSourceId(trafficSourceId);
+	}
+	/**
+	 * 保存渠道和广告之间的分配比例
+	 * @param distribution
+	 * @param trafficId
+	 * @param
+	 */
+	@Override
+	public void insertChannelAndResour(String distribution,String trafficId){
+		//单渠道更新时，先删除渠道和广告对应的比例。然后重新添加
+		distributionRateMapper.deleteDistributionByTrafficId(trafficId);
+
+		Map<Integer,Resources> resourcesMap = new HashMap<>();
+		//获取所有的广告
+		List<Resources> resourcesList = resourcesMapper.selectAll(null);
+		if(resourcesList != null && resourcesList.size()>0){
+			for (Resources resources :resourcesList){
+				resourcesMap.put(resources.getId(),resources);
+			}
+		}
+		//拆分成数组
+		String [] strDisArray = distribution.split("&");
+
+		List<DistributionRate> distributionRateList = new ArrayList<DistributionRate>();
+		if(strDisArray !=null && strDisArray.length>0){
+			DistributionRate dr = null;
+			for(int i = 0;i<strDisArray.length;i++){
+				if(!StringUtils.isEmpty(strDisArray[i])){
+					JSONObject obj = new JSONObject().fromObject(strDisArray[i]);//将json字符串转换为json对象
+					Map map = (Map)obj;
+					//将json对象转换为java对象
+					dr = new DistributionRate();
+					Integer id = Integer.valueOf(map.get("id")!=null?map.get("id").toString():"");
+					dr.setVoluumOfferId(resourcesMap.get(id).getVoluumOfferId());
+					dr.setSubscriptionRate(Float.valueOf(map.get("rate").toString()));
+					//DistributionRate dr = (DistributionRate)JSONObject.toBean(obj,DistributionRate.class);
+					dr.setVoluumTrafficSourceId(trafficId);
+					distributionRateList.add(dr);
+				}
+			}
+			if(distributionRateList.size()>0){
+				distributionRateMapper.insertBatchDistribution(distributionRateList);
+			}
+		}
+	}
+
+	/**
+	 * 同步渠道时默认设置与广告的分配比例为1dd
+	 * @param trafficId
+	 */
+	public void setAllOfferRate(String trafficId){
+		List<Resources> listResources = resourcesMapper.selectAll(null);//.selectAll(null);
+		List<DistributionRate> distributionRateList = new ArrayList<DistributionRate>();
+		if(listResources != null && listResources.size()>0){
+			DistributionRate dr = null;
+			for (Resources resources :listResources){
+				dr = new DistributionRate();
+				dr.setVoluumTrafficSourceId(trafficId);
+				dr.setVoluumOfferId(resources.getVoluumOfferId());
+				dr.setSubscriptionRate(1F);
+				distributionRateList.add(dr);
+			}
+			if(distributionRateList.size()>0){
+				distributionRateMapper.insertBatchDistribution(distributionRateList);
+			}
+		}
 	}
 }

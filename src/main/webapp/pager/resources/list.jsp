@@ -110,7 +110,7 @@
 								<thead class="flip-content bordered-palegreen">
 									<tr>
 										<%--<th class="text-center" style="width:50px;">ID</th>--%>
-										<th class="text-center" style="width:250px;">资源名称</th>
+										<th class="text-center" style="width:240px;">资源名称</th>
 										<th class="text-center" style="width:200px;">广告主</th>
 										<th class="text-center" style="width:200px;">资源别名</th>
 										<th class="text-center" style="width:100px;">国家</th>
@@ -118,8 +118,8 @@
 										<%--<th class="text-center" style="width:70px;">原始链接</th>
 										<th class="text-center" style="width:140px;">活动时间</th>--%>
 										<th class="text-center" style="width:50px;">日限量</th>
-										<th class="text-center" style="width:150px;">描述</th>
-										<th class="text-center" style="width:70px;">是否支持回调</th>
+										<th class="text-center" style="width:100px;">描述</th>
+										<th class="text-center" style="width:80px;">是否支持回调</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -129,9 +129,10 @@
 											<%--<td class="text-center" style="word-break:break-all;">${item.id }</td>--%>
 											<td class="text-center" style="word-break:break-all;">${item.name }</td>
 											<td class="text-center" style="word-break:break-all;">${item.adsName }</td>
-											<td class="text-center" style="word-break:break-all;">
-													<%--${item.nameAlias }--%>
-												<input style="width: 100%" id="${item.id}_aliasName" name="" value="${item.nameAlias }" onblur="updateAliasName(${item.id})"/>
+											<td class="text-center" style="word-break:break-all;" onclick="updateAliasName(${item.id},'${item.nameAlias}')">
+												<div style="cursor: pointer;">
+													<span style="width: 100%" class="azure" id="${item.id}_aliasName" >${item.nameAlias != null && item.nameAlias != ""?item.nameAlias:"<span class='red'>点击修改资源别名</span>"}</span>
+												</div>
 											</td>
 											<td class="text-center" style="word-break:break-all;">
 												<label data-toggle="tooltip" data-placement="bottom" data-original-title="${item.mccGroup }">
@@ -145,13 +146,6 @@
 											</td>
 
 											<td class="text-center" style="word-break:break-all;">${item.price }</td>
-											<%--<td class="text-center" style="word-break:break-all;">
-												<label><button type="button" class="btn" onclick="buttonLink('${item.targetLink}');">查看</button></label>
-											</td>
-											<td class="text-center">
-												<fmt:formatDate value="${item.activityStart}" pattern="yyyy-MM-dd HH:mm:ss" />-
-												<fmt:formatDate value="${item.activityEnd}" pattern="yyyy-MM-dd HH:mm:ss" />
-											</td>--%>
 											<c:choose>
 												<c:when test="${item.dailyLimit ne null}">
 													<td class="text-center" style="word-break:break-all;">${item.dailyLimit}</td>
@@ -168,17 +162,12 @@
 													<td class="text-center">-</td>
 												</c:otherwise>
 											</c:choose>
-											<td class="text-center" style="word-break:break-all;">
-												<%--<c:if test="${item.callbackStatus== 1}">
-													 <font color="green">是</font>
-												</c:if>
-												<c:if test="${item.callbackStatus== 0}">
-													<font color="red">否</font>
-												</c:if>--%>
-													<select id="${item.id}_callbackStatus" name="callbackStatus" style="width:100%" class="multiselect1" onblur="updateCallStatus(${item.id})">
+											<td class="text-center" style="word-break:break-all;" >
+													<select id="${item.id}_callbackStatus" name="callbackStatus" style="width:100%" class="multiselect1" onchange="updateCallStatus(${item.id})">
 														<option value="1" <c:if test="${item.callbackStatus== 1}">selected="selected"</c:if>>是</option>
 														<option value="0" <c:if test="${item.callbackStatus== 0}">selected="selected"</c:if>>否</option>
 													</select>
+
 											</td>
 											<td class="text-center">
 												<%--<a href="${pageContext.request.contextPath}/resources/doUpdate/${item.id}?keyword=${queryBean.keyword}&country=${queryBean.country}&operator=${queryBean.operator}&adsId=${queryBean.adsId}&status=${queryBean.status}&currentPage=${queryBean.currentPage}&pageSize=${queryBean.pageSize}" class="btn btn-azure btn-xs shiny"><i class="fa fa-edit"></i> 编辑</a>--%>
@@ -208,6 +197,7 @@
 	</div>
 	<!-- /Page Body -->
 	<script type="text/javascript">
+
 		$(document).ready(function() {
 			$(".multiselect").select2();
 		});
@@ -252,32 +242,49 @@
 		        className: "",
 		    });
 		}
-		function updateAliasName(id) {
-		    var aliasName = $("#"+id+"_aliasName").val();
-			if(aliasName !=null && aliasName !=""){
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/resources/updateAliasName",
-                    type :"GET",
-                    data:{id:id,aliasName:aliasName},
-                    dataType : "json",
-                    success: function(resources){
-
-                    }
-                });
-			}
+		function updateAliasName(id,aliasName) {
+            //默认prompt
+            layer.prompt({title: '修改资源别名', value: aliasName,formType: 4},function(value, index){
+                if(value !=null && value !=""){
+                    $.ajax({
+                        url: "${pageContext.request.contextPath}/resources/updateAliasName",
+                        type :"GET",
+                        data:{id:id,aliasName:value},
+                        dataType : "json",
+                        success: function(data){
+                            if(data){
+                                $("#"+id+"_aliasName").text(value);
+                                layer.msg("资源名称修改成功");
+							}else{
+                                layer.msg("资源名称修改失败");
+							}
+                            layer.close(index);
+                        }
+                    });
+                }
+            });
         }
         function updateCallStatus(id) {
-            var callStatus = $("#"+id+"_callbackStatus").val();
+			var callStatus = $("#"+id+"_callbackStatus").val();
             if(callStatus !=null && callStatus !=""){
-                $.ajax({
-                    url: "${pageContext.request.contextPath}/resources/updateCallbackStatus",
-                    type :"GET",
-                    data:{id:id,callbackStatus:callStatus},
-                    dataType : "json",
-                    success: function(resources){
-
-                    }
-                });
+                if (confirm("你确认要修改回调状态吗？")){
+					$.ajax({
+						url: "${pageContext.request.contextPath}/resources/updateCallbackStatus",
+						type :"GET",
+						data:{id:id,callbackStatus:callStatus},
+						dataType : "json",
+						success: function(data){
+							if(data){
+								layer.msg("资源是否回调修改成功");
+							}else{
+								layer.msg("资源是否回调修改失败");
+							}
+						}
+					});
+				}else{
+                    var antiCallStatus = $("#"+id+"_callbackStatus").val()==1?0:1;
+                    $("#"+id+"_callbackStatus").val(antiCallStatus);
+				}
             }
         }
 		

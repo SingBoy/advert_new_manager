@@ -208,7 +208,7 @@
 									<label class="error" for="status" style="display:none;">请选择启用状态</label>
 								</div>
 							</div>--%>
-							<%--<div class="form-group">
+							<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">上传图片</label>
 								<div class="col-sm-4" <c:if test="${fn:length(resources.imageUrl) > 0 }">style="display:none;" </c:if>>
 									<input type="file"  name="flie" id="flie" style="width:190px;"/>
@@ -217,7 +217,7 @@
 								<div class="col-sm-4" <c:if test="${fn:length(resources.imageUrl) == 0 }">style="display:none;"</c:if>>
 									 <a class="btn" href="javascript:delImg();" id="imageA"><i style="color:red;" class="fa fa-times"></i>${resources.imageUrl}</a>
 								</div>
-							</div>--%>
+							</div>
 							<div class="form-group">
 								<label for="name" class="col-sm-4 control-label no-padding-right">描述</label>
 								<div class="col-sm-4">

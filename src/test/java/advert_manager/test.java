@@ -1,26 +1,24 @@
 package advert_manager;
 
 
-import java.io.*;
-import java.net.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Logger;
-
-import cn.net.ibingo.common.utils.*;
-
-import cn.net.ibingo.core.controller.VoluumNotifyController;
+import cn.net.ibingo.common.utils.ConstantConfig;
+import cn.net.ibingo.common.utils.HttpRequester;
+import cn.net.ibingo.common.utils.HttpRespons;
+import cn.net.ibingo.common.utils.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.springframework.cache.jcache.interceptor.JCacheOperationSourcePointcut;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class test {
 	private static Logger log = Logger.getLogger(String.valueOf(test.class));
@@ -35,6 +33,7 @@ public class test {
 		//updateTrafficSource();
 		//deleteTracfficSource();
 		//downloadFile1("D://test","abc");
+		//requestVoluum(0,"");
 		try {
 			//uploadFile();
 			// downloadFile();
@@ -68,7 +67,7 @@ public class test {
 					System.out.println(i+"------------------------------------------"+new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS").format(new Date()));
 				}
 			};
-			ThreadPoolUtil.execute(rn);
+			//ThreadPoolUtil.execute(rn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -129,7 +128,7 @@ public class test {
 				return;
 			}else{
 				int len;
-				String dir="D:\\test/b.jpg";//SDCard+"/"+path;
+				String dir="D:\\test/aaaaa.jpg";//SDCard+"/"+path;
 				file = new File(dir);//新建文件夹
 				file.createNewFile();//新建文件
 
@@ -215,14 +214,18 @@ public class test {
 	}
 
 
-
+	/**
+	 * 模拟用户访问广告、并将回调给voluum
+	 * @param i
+	 * @param src
+	 */
 	public static void requestVoluum(int i,String src){
 		log.info("第"+i+"条线程请求开始"+new Date());
 		HttpUtil httpUtil = new HttpUtil();
 		Map<String, Object> paramsToken = new HashMap<String, Object>();
 		Map<String, Object> params = new HashMap<String, Object>();
 		try {
-			String url = "http://t.nicegame.me/9c419064-b80e-4ab1-a88d-b5476ffeda83?postback={postback}";//"http://t.nicegame.me/"+src;
+			String url = "http://t.nicegame.me/801d0290-6ca6-4dd9-8e37-9086d58f5139";//"http://t.nicegame.me/9c419064-b80e-4ab1-a88d-b5476ffeda83?postback={postback}";//"http://t.nicegame.me/"+src;
 			System.out.println("访问地址:" + url);
 			URL serverUrl = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) serverUrl
@@ -251,15 +254,6 @@ public class test {
 				}
 			}
 			String locationUrl = "http://t.nicegame.me/postback?cid="+map.get("cid");
-			/*serverUrl = new URL(location);
-			conn = (HttpURLConnection) serverUrl.openConnection();
-			conn.setRequestMethod("GET");
-
-			conn.addRequestProperty("Accept-Charset", "UTF-8;");
-			conn.addRequestProperty("User-Agent",
-					"Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.2.8) Firefox/3.6.8");
-			conn.addRequestProperty("Referer", "http://zuidaima.com/");
-			conn.connect();*/
 			HttpClient client = new DefaultHttpClient();
 			HttpGet get = new HttpGet(locationUrl.toString());
 			HttpResponse response = client.execute(get);
@@ -473,8 +467,5 @@ public class test {
 		}
 		return null;
 	}
-	
-	
-	
 
 }
