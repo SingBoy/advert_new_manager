@@ -30,7 +30,7 @@ public class test2 {
     public static void main(String[] arg){
         try {
 
-            postLogin("http://localhost:9090/user_manager/account/commonUserLogin","{\"passWord\":\"123456\",\"userName\":\"15250960714\"}");
+            postLogin("http://13.228.190.222:8090/user_manager/account/commonUserLogin","{\"passWord\":\"123456\",\"userName\":\"15927508681\"}");
 
             //requestVoluum();
 

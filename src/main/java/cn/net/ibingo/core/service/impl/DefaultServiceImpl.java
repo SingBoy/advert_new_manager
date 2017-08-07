@@ -2,6 +2,8 @@ package cn.net.ibingo.core.service.impl;
 
 import java.util.Date;
 import java.util.List;
+
+import cn.net.ibingo.core.model.HtmlLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.net.ibingo.common.pagination.model.PaginationList;

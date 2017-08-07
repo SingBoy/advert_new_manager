@@ -1,34 +1,5 @@
 package cn.net.ibingo.core.controller;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import cn.net.ibingo.common.utils.HttpUtil;
-import cn.net.ibingo.common.utils.ParseDocument;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.net.ibingo.common.controller.BaseController;
 import cn.net.ibingo.common.pagination.model.PaginationList;
 import cn.net.ibingo.common.utils.ConstantConfig;
@@ -38,6 +9,25 @@ import cn.net.ibingo.core.query.IpAreaQueryBean;
 import cn.net.ibingo.core.service.IpAreaService;
 import cn.net.ibingo.core.service.MccService;
 import cn.net.ibingo.core.service.MncSevice;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/ipArea")
@@ -52,6 +42,7 @@ public class IpAreaController extends BaseController{
 
 	@Autowired
 	private MncSevice mncSevice;
+
 
 	@RequestMapping(value = "/list")
 	public String list(IpAreaQueryBean queryBean, ModelMap modelMap){
@@ -190,51 +181,4 @@ public class IpAreaController extends BaseController{
 		return "redirect:/ipArea/list";
 	}
 
-
-	@RequestMapping(value = "/html")
-	public String html(HttpServletRequest request,HttpServletResponse response, ModelMap modelMap) {
-		try {
-			Document doc = ParseDocument.parseDocumentFromAndroidUrl("http://t.nicegame.me/801d0290-6ca6-4dd9-8e37-9086d58f5139");
-			/*String snid = doc.select("input[name=snid]").val();
-			String userAccount = doc.select("input[name=snid]").val();
-			String appKey = doc.select("input[name=snid]").val();
-			String appName = doc.select("input[name=snid]").val();
-			modelMap.put("snid",snid);*/
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "/crackAdver";
-	}
-
-
-	@RequestMapping(value = "/printHtml")
-	public void printHtml(HttpServletRequest request,HttpServletResponse response, ModelMap modelMap) {
-		try {
-			//Document doc = ParseDocument.parseDocumentFromAndroidUrl("http://localhost:9091/advert_new_manager/ipArea/html");
-			Document doc = ParseDocument.parseDocumentFromAndroidUrl("http://t.nicegame.me/801d0290-6ca6-4dd9-8e37-9086d58f5139");
-			String sid = doc.select("input[name=snid]").val();
-			Map<String, String> datas = new HashMap<>();
-			datas.put("flag","Submit");
-			datas.put("sid","2FAC852F6F9A253240A068AEFE1D986F");
-			log.info("sid-----------------------------------------------------"+sid);
-			String url = doc.location();
-			Connection con2 = Jsoup.connect("http://m.asiael3ab.asiacell.com:80/asiacell/servlet/handle"+"?"+url.substring(url.indexOf("?")+1,url.length()));
-			con2.header("User-Agent", "Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.2");
-			//设置cookie和post上面的map数据
-			Connection.Response login = con2.ignoreContentType(true).method(Connection.Method.POST).data(datas).execute();
-			//打印，登陆成功后的信息
-			System.out.println(login.body());
-			//登陆成功后的cookie信息，可以保存到本地，以后登陆时，只需一次登陆即可
-			Map<String, String> map = login.cookies();
-			for (String s : map.keySet()) {
-				System.out.println(s + "      " + map.get(s));
-			}
-			PrintWriter out = response.getWriter();
-			out.print(login.body());
-			out.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
