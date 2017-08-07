@@ -32,20 +32,20 @@
 			<artifactId>spring-data-redis</artifactId>
 			<version>1.0.2.RELEASE</version>
 		</dependency>
-	
+
 		<dependency>
-		  	<groupId>org.freemarker</groupId>
-		  	<artifactId>freemarker</artifactId>
-		  	<version>2.3.25-incubating</version>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.25-incubating</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Spring相关依赖的导入 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -154,14 +154,14 @@
 			<version>3.14</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.apache.poi</groupId>
-    		<artifactId>poi-ooxml</artifactId>
-    		<version>3.14</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.14</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.apache.poi</groupId>
-    		<artifactId>poi-ooxml-schemas</artifactId>
-    		<version>3.14</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.14</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -186,11 +186,11 @@
 			<version>2.4</version>
 			<classifier>jdk15</classifier>
 		</dependency>
-        <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -207,7 +207,8 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.10.3</version>
 		</dependency>
-    </dependencies>
+	</dependencies>
+
 	<build>
 		<finalName>advert_new_manager</finalName>
 		<plugins>
