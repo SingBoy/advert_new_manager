@@ -38,18 +38,18 @@ public class HomeController extends BaseController {
 				username = URLEncoder.encode(username, "utf-8");
 				Cookie usernameCookie = new Cookie("username", username);
 				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-				String now = sdf.format(date);
-				Cookie dateCookie = new Cookie("date", now);
+				//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+				//String now = sdf.format(date);
+				//Cookie dateCookie = new Cookie("date", now);
 
 				Cookie passwordCookie = new Cookie("password", password);
 				// 2、设置cookie的过期时间，如果不设置，则浏览关闭后就过期了，本地就没有了
 				usernameCookie.setMaxAge(30 * 24 * 3600);
-				dateCookie.setMaxAge(30 * 24 * 3600);
+				//dateCookie.setMaxAge(30 * 24 * 3600);
 				passwordCookie.setMaxAge(30 * 24 * 3600);
 				// 3、将cookie存于响应对象中
 				response.addCookie(usernameCookie);
-				response.addCookie(dateCookie);
+				//response.addCookie(dateCookie);
 				response.addCookie(passwordCookie);
 				
 				session.setAttribute(ConstantConfig.UID, user.getId());

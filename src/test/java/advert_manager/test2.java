@@ -1,4 +1,5 @@
 package advert_manager;
+/*
 
 import cn.net.ibingo.common.utils.*;
 import org.apache.http.HttpEntity;
@@ -22,25 +23,32 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+*/
 
 /**
  * Created by lqj on 2017-07-10.
  */
 public class test2 {
+/*
     public static void main(String[] arg){
         try {
 
-            postLogin("http://13.228.190.222:8090/user_manager/account/commonUserLogin","{\"passWord\":\"123456\",\"userName\":\"15927508681\"}");
+            //postLogin("http://13.228.190.222:8090/user_manager/account/commonUserLogin","{\"passWord\":\"123456\",\"userName\":\"15927508681\"}");
 
             //requestVoluum();
 
             //GetWebContent("http://t.nicegame.me/801d0290-6ca6-4dd9-8e37-9086d58f5139","UTF-8",10000);
             //GetWebContent("http://m.asiael3ab.asiacell.com/asiacell/servlet/adletangZombieReaper3?cid=wGDKKT8BV1TVSP77HR5T78PE&channel=567d1e21-f671-4a1a-8fa6-bb4b2963d594wGDKKT8BV1TVSP77HR5T78PE&proj=1004107&p=86110891290217&c=l00181.10029&o&u&needCnfm=0&a=00000452&viaSubLink&traceid=erL188sr&sign=a2b3842fb629805eda5cf6d29d38158a4debcb19","UTF-8",10000);
             //ssssssss();
+            Map<String,Integer> map = new HashMap<String, Integer>();
+            map.put("count",0);
+            FindFile(map,"D:\\游戏包\\data - 副本\\data\\apk");// 指定遍历的目录
+            System.out.println(map.get("count"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
 
     public static String postLogin(String urlString, String contents) throws Exception {
@@ -139,7 +147,8 @@ public class test2 {
         return str.toString();
     }
 
-    /**
+    */
+/**
      *网页抓取方法
      * @param urlString      要抓取的url地址
      * @param charset        网页编码方式
@@ -147,7 +156,8 @@ public class test2 {
      * @return               抓取的网页内容\
      *      //http://blog.csdn.net/yjflinchong
      * @throws IOException   抓取异常
-     */
+     *//*
+
     public static String GetWebContent(String urlString, final String charset, int timeout) throws IOException {
         if (urlString == null || urlString.length() == 0) {
             return null;
@@ -161,7 +171,11 @@ public class test2 {
         //http://blog.csdn.net/yjflinchong
         int temp = Integer.parseInt(Math.round(Math.random()*7)+"");
        // conn.setRequestProperty(UserAgent[temp]);  // 模拟手机系统
-        conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");//只接受text/html类型，当然也可以接受图片,pdf,*/*任意，就是tomcat/conf/web里面定义那些
+        conn.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,**/
+
+/*;q=0.8");//只接受text/html类型，当然也可以接受图片,pdf,**/
+
+/*任意，就是tomcat/conf/web里面定义那些
         conn.setConnectTimeout(timeout);
         try {
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -207,4 +221,23 @@ public class test2 {
         Document doc =  ParseDocument.parseDocumentFromUrl("http://t.nicegame.me/801d0290-6ca6-4dd9-8e37-9086d58f5139");
 
     }
+
+    public static void FindFile(Map<String,Integer> map ,String s) {
+        File file = new File(s);
+        for (String temp : file.list()) {
+            String newstr = s + "\\" + temp;
+            File filetemp = new File(newstr);
+            if (filetemp.isFile()) {
+                if(filetemp.getName().indexOf(".apk")>-1){
+                    map.put("count",map.get("count")+1);
+                }
+            } else {
+                FindFile(map,newstr);
+            }
+        }
+    }
+*/
+
+
+
 }

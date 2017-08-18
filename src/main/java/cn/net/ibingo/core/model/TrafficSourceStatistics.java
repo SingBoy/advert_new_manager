@@ -31,6 +31,8 @@ public class TrafficSourceStatistics {
 
     private Date createDate;
 
+    private Date modifyDate;
+
     public Integer getId() {
         return id;
     }
@@ -125,5 +127,13 @@ public class TrafficSourceStatistics {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Date getModifyDate() {
+        return modifyDate;
+    }
+
+    public void setModifyDate(Date modifyDate) {
+        this.modifyDate = modifyDate;
     }
 }

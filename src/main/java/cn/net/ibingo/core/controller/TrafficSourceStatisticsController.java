@@ -92,17 +92,7 @@ public class TrafficSourceStatisticsController extends BaseController {
             modelMap.addAttribute(ConstantConfig.LISTFRISTCHANNEL, listFristChannel);
         }
 
-        List<DistributionRate> distributionRateList = distributionRateService.selectAll();
-        Map<String,Float> rateMap = new HashMap<String,Float>();
-        if (distributionRateList != null && distributionRateList.size() > 0) {
-            for(DistributionRate rate : distributionRateList){
-                rateMap.put(rate.getVoluumOfferId()+"_"+rate.getVoluumTrafficSourceId(),rate.getSubscriptionRate());
-            }
-        }
-
-        PaginationList<TrafficSourceStatistics> pageDataList = trafficSourceStatisticsService.list(queryBean);
-        countConversNum(rateMap,pageDataList);
-
+        PaginationList<TrafficSourceStatistics> pageDataList = trafficSourceStatisticsService.rateList(queryBean);
         modelMap.addAttribute(ConstantConfig.PAGE_DATA_LIST, pageDataList);
         modelMap.addAttribute(ConstantConfig.QUERYBEAN, queryBean);
         return "pager/trafficSourceStatistics/ratelist";
@@ -111,7 +101,7 @@ public class TrafficSourceStatisticsController extends BaseController {
     /**
      * 根据渠道和广告之间的分配比例计算转化数
      */
-    public void countConversNum(Map<String,Float> rateMap, PaginationList<TrafficSourceStatistics> pageDataList ){
+    /*public void countConversNum(Map<String,Float> rateMap, PaginationList<TrafficSourceStatistics> pageDataList ){
         if(rateMap != null && pageDataList != null && pageDataList.getTotalSize()>0){
             //获取查询出来的数据list
                 List<TrafficSourceStatistics> pageDatas  = pageDataList.getPageRecords();
@@ -128,5 +118,5 @@ public class TrafficSourceStatisticsController extends BaseController {
         }
 
     }
-
+*/
 }

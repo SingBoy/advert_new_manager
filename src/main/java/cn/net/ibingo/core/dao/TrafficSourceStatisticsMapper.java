@@ -21,9 +21,13 @@ public interface TrafficSourceStatisticsMapper {
 
     public List<TrafficSourceStatistics> selectOldTrafficSourceStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate, @Param("country")String country);
 
+    public List<TrafficSourceStatistics> selectOldTrafficSourceRateStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate, @Param("country")String country);
+
     public int insertTrafficSourceStatistics(List<TrafficSourceStatistics> trafficList);
 
     public int updateTrafficSourceStatistics(List<TrafficSourceStatistics> trafficList);
 
     public int insertTrafficSourceRateStatistics(List<TrafficSourceStatistics> trafficRateList);
+
+    public int updateTrafficSourceRateStatistics(List<TrafficSourceStatistics> trafficList);
 }

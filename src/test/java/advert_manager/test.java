@@ -1,7 +1,7 @@
 package advert_manager;
 
 
-import cn.net.ibingo.common.utils.ConstantConfig;
+/*import cn.net.ibingo.common.utils.ConstantConfig;
 import cn.net.ibingo.common.utils.HttpRequester;
 import cn.net.ibingo.common.utils.HttpRespons;
 import cn.net.ibingo.common.utils.HttpUtil;
@@ -18,10 +18,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.Logger;*/
 
 public class test {
-	private static Logger log = Logger.getLogger(String.valueOf(test.class));
+	/*private static Logger log = Logger.getLogger(String.valueOf(test.class));
 	private static String token = "";
 	private static HttpUtil httpUtil = new HttpUtil();
 
@@ -214,11 +214,11 @@ public class test {
 	}
 
 
-	/**
+	*//**
 	 * 模拟用户访问广告、并将回调给voluum
 	 * @param i
 	 * @param src
-	 */
+	 *//*
 	public static void requestVoluum(int i,String src){
 		log.info("第"+i+"条线程请求开始"+new Date());
 		HttpUtil httpUtil = new HttpUtil();
@@ -285,9 +285,9 @@ public class test {
 		}
 	}
 	
-	/**
+	*//**
 	 * 当新增渠道时，将对应的渠道信息上传到Voluum平台
-	 */
+	 *//*
 	public static void addTrafficSource() {
 		 Map<String, Object> params = new HashMap<String, Object>();
 			 params.put("name", "ceshi2");
@@ -467,5 +467,5 @@ public class test {
 		}
 		return null;
 	}
-
+*/
 }

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:tool="http://www.springframework.org/schema/tool"
+	   xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/tool http://www.springframework.org/schema/tool/spring-tool.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+	<!-- 开启Spring的Annotation功能 -->
+	<mvc:annotation-driven />
+	
+	<!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+	<bean id="mappingJackson2HttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<!-- 避免IE出现下载JSON文件的情况 -->
+				<value>text/html;charset=UTF-8</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!-- json转换器 -->
+				<ref bean="mappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" 
+	p:prefix="/" p:suffix=".jsp" />
+
+	<!-- 开启aop注解 -->
+	<aop:aspectj-autoproxy/>
+<!-- 	<bean id="logAspect" class="cn.net.ibingo.common.aop.LogAspect" />  -->
+	
+	<!-- 自动扫描Controller下的所有控制器 -->
+	<context:component-scan base-package="cn.net.ibingo.core.controller" />
+<!-- 	<context:component-scan base-package="cn.net.ibingo.common.controller" /> -->
+	
+	<!-- 自动扫描Service下的业务逻辑处理类 -->
+	<context:component-scan base-package="cn.net.ibingo.core.service" />
+<!-- 	<context:component-scan base-package="cn.net.ibingo.common.aop" annotation-config="true"/>  -->
+	
+	<!-- 自动扫描redis下的业务逻辑处理类 -->
+	<context:component-scan base-package="cn.net.ibingo.core.redis" >
+		<context:include-filter type="annotation"  expression="org.springframework.stereotype.Repository" />
+	</context:component-scan>
+	
+	<!-- 静态资源配置 -->
+	<mvc:resources location="/plugins/" mapping="/plugins/**"></mvc:resources>
+	
+	<!-- 上传文件拦截，设置最大上传文件大小   10M=10*1024*1024(B)=10485760 bytes --> 
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10485760" />
+	</bean>
+	
+	<!-- 事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 注解方式配置事物 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+   	<mvc:interceptors>
+			<mvc:interceptor>
+				<mvc:mapping path="/**" />
+				<mvc:exclude-mapping path="/login"/>
+				<mvc:exclude-mapping path="/voluum/**"/>
+				<mvc:exclude-mapping path="/logout/**"/>
+				<mvc:exclude-mapping path="/plugins/**"/>
+				<mvc:exclude-mapping path="/error/**"/>
+				<mvc:exclude-mapping path="/interception/**"/>
+				<bean class="cn.net.ibingo.common.interceptor.AuthInterceptor" />
+			</mvc:interceptor>
+		<!--<mvc:interceptor>
+			<mvc:mapping path="/welcome/**"/>
+			<mvc:mapping path="/user/**"/>
+			<mvc:mapping path="/twoChannel/**"/>
+			<mvc:mapping path="/resources/**"/>
+			<mvc:mapping path="/mcc/**"/>
+			<mvc:mapping path="/mnc/**"/>
+			<mvc:mapping path="/ipArea/**"/>
+			<mvc:mapping path="/fristChannel/**"/>
+			<mvc:mapping path="/notifyChannel/**"/>
+			<mvc:mapping path="/notifyAnalysis/**"/>
+			<mvc:mapping path="/advertisers/**"/>
+			<mvc:mapping path="/default/**"/>
+			<mvc:mapping path="/timezoneCountry/**"/>
+			<mvc:mapping path="/voluumList/**"/>
+			<mvc:mapping path="/advertisersStatistics/**"/>
+			<mvc:mapping path="/offerStatistics/**"/>
+			<mvc:mapping path="/trafficSourceStatistics/**"/>
+
+			<mvc:exclude-mapping path="/login"/>
+			<mvc:exclude-mapping path="/logout"/>
+			<mvc:exclude-mapping path="/error/**"/>
+			<mvc:exclude-mapping path="/user/doUsername"/>
+			<mvc:exclude-mapping path="/advertisers/doBean"/>
+			<mvc:exclude-mapping path="/fristChannel/doBean"/>
+			<mvc:exclude-mapping path="/twoChannel/doBean"/>
+			<mvc:exclude-mapping path="/advertisers/listAdvertisers"/>
+			<mvc:exclude-mapping path="/fristChannel/listFristChannel"/>
+			<mvc:exclude-mapping path="/mcc/doBean"/>	
+			<mvc:exclude-mapping path="/twoChannel/byFristCode"/>
+			<mvc:exclude-mapping path="/resources/byAdsId"/>
+			<mvc:exclude-mapping path="/mnc/listMnc"/>
+			<mvc:exclude-mapping path="/mnc/listMncName/*"/>
+			<bean class="cn.net.ibingo.common.interceptor.AuthInterceptor"/>
+		</mvc:interceptor>-->
+	</mvc:interceptors>
+
+	<!-- 定时任务注解配置-->
+	<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>
+	<task:scheduler id="qbScheduler" pool-size="10"/>
+</beans>

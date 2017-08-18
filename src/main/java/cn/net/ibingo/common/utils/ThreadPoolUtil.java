@@ -18,10 +18,10 @@ public class ThreadPoolUtil {
     }
 
     //线程池核心线程数
-    private static int CORE_POOL_SIZE = 2;
+    private static int CORE_POOL_SIZE = 5;
 
     //线程池最大线程数
-    private static int MAX_POOL_SIZE = 20;
+    private static int MAX_POOL_SIZE = 50;
 
     //额外线程空状态生存时间
     private static int KEEP_ALIVE_TIME = 10000;

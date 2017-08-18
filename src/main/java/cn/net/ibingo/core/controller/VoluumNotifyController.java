@@ -90,32 +90,32 @@ public class VoluumNotifyController extends BaseController {
             final FristChannel fristChannel = fristChannelService.selectByTrafficSourceId(notify.getTrafficSourceId());
             if (fristChannel != null) {
                 notify.setTrafficSourceName(fristChannel.getName());
-            }
 
-            //根据渠道id和offerId查询分配比例
-            final Float rate = distributionRateService.selectByTrafficIdAndOfferId(notify.getTrafficSourceId(), notify.getOfferId());
-            notify.setCreateDate(new Date());
-            //根据clickId去重
-            boolean clickFlg  =voluumNotifyService.selectCountByClickId(notify.getClickId());
-            if(clickFlg){
-                int count = voluumNotifyService.insertNotify(notify);
-                if (count > 0) {
-                    try {
-                        final Integer callStateTmp = callState;
-                        final Integer dailyLimitTmp = dailyLimit;
-                        Runnable rn = new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    sendStatusByMessage(notify, fristChannel, callStateTmp, rate, dailyLimitTmp);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                //根据渠道id和offerId查询分配比例
+                final Float rate = 0.8F;//distributionRateService.selectByTrafficIdAndOfferId(notify.getTrafficSourceId(), notify.getOfferId());
+                notify.setCreateDate(new Date());
+                //根据clickId去重
+                boolean clickFlg  =voluumNotifyService.selectCountByClickId(notify.getClickId());
+                if(clickFlg){
+                    int count = voluumNotifyService.insertNotify(notify);
+                    if (count > 0) {
+                        try {
+                            final Integer callStateTmp = callState;
+                            final Integer dailyLimitTmp = dailyLimit;
+                            Runnable rn = new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sendStatusByMessage(notify, fristChannel, callStateTmp, rate, dailyLimitTmp);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            }
-                        };
-                        ThreadPoolUtil.execute(rn);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            };
+                            ThreadPoolUtil.execute(rn);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -133,9 +133,9 @@ public class VoluumNotifyController extends BaseController {
         int status = 0;// 发送状态位：0没发送，1发送
         try {
             // 支持回调
-            if (iscallback != null && iscallback == 1 && StringUtils.isNotBlank(fristChannel.getCallbackUrl())) {
+          //  if (iscallback != null && iscallback == 1 && StringUtils.isNotBlank(fristChannel.getCallbackUrl())) {
                 // 订阅分成比例为0时不回调
-                if (subscriptionRate != null && subscriptionRate != 0) {
+               // if (subscriptionRate != null && subscriptionRate != 0) {
                     //是否超过日限量
                     // 订阅分成比例为1时全部回调
                     if (subscriptionRate == 1) {
@@ -151,8 +151,8 @@ public class VoluumNotifyController extends BaseController {
                     } else {// 订阅分成比例大于0小于1时
                         sysDownTraffic(message, fristChannel, status, subscriptionRate);
                     }
-                }
-            }
+              // }
+          // }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -270,7 +270,6 @@ public class VoluumNotifyController extends BaseController {
             }
             String resultStr = sbf.toString();
             resultStr = resultStr.substring(0, resultStr.length() - 1);
-            log.info("callbackUrl======================"+resultStr);
             return resultStr;
         }
         return "";

@@ -27,5 +27,7 @@ public interface VoluumNotifyMapper {
 
     public List<VoluumNotify> selectTrafficSourceStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate,@Param("country")String country);
 
+    public List<VoluumNotify> selectTrafficSourceRateStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate,@Param("country")String country,@Param("dataType")String dataType);
+
     public List<VoluumNotify> selectAdvertisersStatistics(@Param("startDate") String startDate, @Param("endDate")String endDate,@Param("country")String country);
 }
